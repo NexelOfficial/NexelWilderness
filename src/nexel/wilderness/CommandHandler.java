@@ -30,6 +30,7 @@ public class CommandHandler extends JavaPlugin implements Listener {
 		
     	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &fNexelWilderness BETA has been enabled!"));
     	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &fThis is a Beta build. Things will break!"));
+    	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &aCreated with &c♥  &aby Nathan Diepeveen"));
     	
     	saveDefaultConfig();
     	
@@ -105,7 +106,7 @@ public class CommandHandler extends JavaPlugin implements Listener {
 				
 				getConfig().set("blacklistedBlocks." + args[1].toUpperCase(), 1);
 				saveConfig();
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("removedFromBlacklist").replace("%blacklistedblock%", args[1].toUpperCase())));
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("succesfullBlacklist").replace("%blacklistedblock%", args[1].toUpperCase())));
 				return true;
 				
 			} 
@@ -130,6 +131,23 @@ public class CommandHandler extends JavaPlugin implements Listener {
 				saveConfig();
 				
 				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("removedFromBlacklist").replace("%removedblock%", args[1].toUpperCase())));
+				return true;
+				
+			}
+			
+		}
+		
+		if (currentPlayer.hasPermission("nexelwilderness.admin.help") && currentPlayer.hasPermission("nexelwilderness.admin.*")) {
+			
+			if (args[0].equalsIgnoreCase("help")) {
+				
+				String prefix = getConfig().getString("prefix") + "&r ";
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aAll commands for /wild:"));
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild (The main Wild command.)"));
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild size <size> (Sets the size of the wild region.)"));
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild blacklist (Add and show blacklisted blocks.)"));
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild removeblacklist <block> (Remove a block from the blacklist)"));
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aThere are so much more options in te config! Customize the plugin to your needs."));
 				return true;
 				
 			}
