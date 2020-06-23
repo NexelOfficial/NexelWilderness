@@ -1,0 +1,278 @@
+package nexel.wilderness;
+
+
+import java.util.Random;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.plugin.java.JavaPlugin;
+
+
+public class Main extends JavaPlugin implements Listener {
+	
+	InventoryClass inventoryClass = new InventoryClass(this);
+	
+	@Override
+    public void onEnable() {	
+		
+		getServer().getPluginManager().registerEvents(this, this);
+		
+    	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &fNexelWilderness BETA has been enabled!"));
+    	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &fThis is a Beta build. Things will break!"));
+    	
+    	saveDefaultConfig();
+    	
+	}
+	
+	@Override
+    public void onDisable() {	
+		
+	}
+	
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String string, String[] args) {
+
+		if (!(command.getName().equalsIgnoreCase("wild"))) return false;
+
+		String prefix = getConfig().getString("prefix") + "&r ";
+		Player currentPlayer = Bukkit.getPlayer(sender.getName());
+		
+		if (args.length == 0) {
+			
+			inventoryClass.biomeChooser(currentPlayer);
+			return true;
+			
+		}
+		
+		if (!(currentPlayer.hasPermission("nexelwilderness.admin.size") && currentPlayer.hasPermission("nexelwilderness.admin.*"))) return false;
+		
+		if (args[0].equalsIgnoreCase("size")) {
+		
+			if (errorCatcher(args.length, 2, "/wild size <size>", currentPlayer) == true) return false;
+			
+			getConfig().set("size", args[1]);
+			saveConfig();
+			
+			currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("wildSizeSet").replace("%wildsize%", Integer.parseInt(args[1])/2 + "&r,&l -" + Integer.parseInt(args[1])/2)));
+			return true; 
+			
+		}
+		
+		if (args[0].equalsIgnoreCase("blacklist")) {
+			
+			if (args.length == 1) {
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "Blacklisted blocks:"));
+					
+				if (!(getConfig().isSet("blacklistedBlocks"))) {
+					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + getConfig().getString("noBlacklistedBlocks")));
+					return true;
+				}
+				if (getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false).size() == 0) {
+					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + getConfig().getString("noBlacklistedBlocks")));
+					return true;
+				}
+				
+				for(String block : getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false)) 
+					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + block));
+				
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + getConfig().getString("removeBlacklistedBlock")));
+				return true;
+				
+			}
+			
+			if (Material.valueOf(args[1].toUpperCase()) == null) {
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("blockDoesntExist")));
+				return false;	
+			}
+			
+			getConfig().set("blacklistedBlocks." + args[1].toUpperCase(), 1);
+			saveConfig();
+			
+			currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("removedFromBlacklist").replace("%blacklistedblock%", args[1].toUpperCase())));
+			return true;
+			
+		} 
+		
+		if (args[0].equalsIgnoreCase("removeblacklist")) {
+			
+			if (errorCatcher(args.length, 2, "/wild removeblacklist <name>", currentPlayer) == true) return false;
+			
+			if (Material.valueOf(args[1].toUpperCase()) == null) {
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("blockDoesntExist")));
+				return false;	
+			}
+			
+			getConfig().set("blacklistedBlocks." + args[1].toUpperCase(), null);
+			saveConfig();
+			
+			currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("removedFromBlacklist").replace("%removedblock%", args[1].toUpperCase())));
+			return true;
+			
+		}
+	
+		return false;
+	
+	}
+	
+	@EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+		
+		 InventoryHolder inventoryHolder = event.getInventory().getHolder();
+		 
+		 if (inventoryHolder != inventoryClass.mapChooserInventory.getHolder()) return;
+		 if (event.getView().getTitle()!=getConfig().getString("menuprefix")) return;
+		 event.setCancelled(true);
+		 if (event.getCurrentItem() == null) return;
+		 String displayName = null;
+		 try {
+			 displayName = event.getCurrentItem().getItemMeta().getDisplayName();
+		 } catch(NullPointerException ex) { return; }
+	     if (displayName==null || displayName==" ") return;
+	     Player currentPlayer = (Player) event.getWhoClicked();
+
+	     if (displayName.contains("Forest")) {
+	    	 currentPlayer.closeInventory();
+	    	 biomeWild("Forest", currentPlayer); return;
+		 } if (displayName.contains("Desert")) {
+		     currentPlayer.closeInventory();
+		     biomeWild("Desert", currentPlayer); return;
+		 } if (displayName.contains("Plains")) {
+	    	 currentPlayer.closeInventory();
+	    	 biomeWild("Plains", currentPlayer); return;
+		 } if (displayName.contains("Jungle")) {
+		     currentPlayer.closeInventory();
+		     biomeWild("Jungle", currentPlayer); return;
+		 } if (displayName.contains("Taiga")) {
+		     currentPlayer.closeInventory();
+		     biomeWild("Taiga", currentPlayer); return;
+		 } if (displayName.contains("Random biome")) {
+		     currentPlayer.closeInventory();
+		     normalWild(currentPlayer); return;
+		 } if (displayName.contains("Close")) {
+		     currentPlayer.closeInventory();
+		     return;
+		 }
+		 
+	}
+	
+	public boolean errorCatcher(int argsLength, int argsRequired, String usage, Player currentPlayer) {
+		
+		String prefix = getConfig().getString("prefix") + "&r ";
+		
+		if (!(currentPlayer.hasPermission("nexelwilderness.admin"))) {
+			currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("noPermissions")));
+			return true;	
+		}
+		
+		if (argsLength != argsRequired) {
+			currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("insufficientDetails").replace("%usage%", usage)));
+			return true;	
+		}
+		return false;
+		
+	}
+	
+	
+	public void biomeWild(String biome, Player currentPlayer) {
+		
+		Random randomNumber = new Random(); 
+
+		int configSize = Integer.parseInt(getConfig().getString("size"));
+		World currentWorld = currentPlayer.getWorld();
+		
+		for (int i = 0; i < 200; i++) {
+			
+			int wildX = (randomNumber.nextInt(configSize + 1)-configSize/2); 
+			int wildZ = (randomNumber.nextInt(configSize + 1)-configSize/2); 
+			
+			@SuppressWarnings("deprecation")
+			Biome currentBiome = currentWorld.getBiome(wildX, wildZ);
+			if (currentBiome != Biome.valueOf(biome.toUpperCase())) 
+				continue;
+			
+			for (int wildY = 255; wildY > 0; wildY--) {
+				
+				Location wildBlock = new Location(currentWorld, wildX, wildY, wildZ);
+				if (wildBlock.getBlock().getType() == Material.AIR) 
+					continue;
+					
+				if (getConfig().isSet("blacklistedBlocks"))
+					for(String blacklistedBlock : getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false)) {
+						if (wildBlock.getBlock().getType() == Material.valueOf(blacklistedBlock)) {
+							String prefix = getConfig().getString("prefix") + "&r ";
+							currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("noSafeSpot")));
+							currentPlayer.closeInventory();
+							return;
+						}
+					}
+				
+				Location teleportBlock = new Location(currentWorld, wildX, wildY + 2, wildZ);
+				currentPlayer.teleport(teleportBlock);
+				currentPlayer.sendTitle(ChatColor.translateAlternateColorCodes('&', "&cWilderness"), "Teleported you to " + wildX + ", " + wildZ, 10, 50, 10);
+				return;
+				
+			}
+				
+		}
+		String prefix = getConfig().getString("prefix") + "&r ";
+		currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("noBiomeSpot")));
+		currentPlayer.closeInventory();
+		
+	}
+
+	public void normalWild(Player currentPlayer) {
+		
+		Random randomNumber = new Random(); 
+
+		int configSize = Integer.parseInt(getConfig().getString("size"));
+		World currentWorld = currentPlayer.getWorld();
+			
+		int wildX = (randomNumber.nextInt(configSize + 1)-configSize/2); 
+		int wildZ = (randomNumber.nextInt(configSize + 1)-configSize/2); 
+		
+		for (int wildY = 255; wildY > 0; wildY--) {
+			
+			Location wildBlock = new Location(currentWorld, wildX, wildY, wildZ);
+			if (wildBlock.getBlock().getType() == null || wildBlock.getBlock().getType() == Material.AIR) 
+				continue;
+				
+			if (getConfig().isSet("blacklistedBlocks"))
+				for(String blacklistedBlock : getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false)) {
+					if (wildBlock.getBlock().getType() == Material.valueOf(blacklistedBlock)) {
+						String prefix = getConfig().getString("prefix") + "&r ";
+						currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("noSafeSpot")));
+						currentPlayer.closeInventory();
+						return;
+					}
+				}
+			
+			Location teleportBlock = new Location(currentWorld, wildX, wildY + 2, wildZ);
+			currentPlayer.teleport(teleportBlock);
+			currentPlayer.sendTitle(ChatColor.translateAlternateColorCodes('&', "&cWilderness"), "Teleported you to " + wildX + ", " + wildZ, 10, 50, 10);
+			return;
+			
+		}
+		
+	}
+	
+	public String capitalBiome(String biomeString) {
+	    if(biomeString == null || biomeString.isEmpty()) {
+	        return biomeString;
+	    }
+
+	    return biomeString.substring(0, 1).toUpperCase() + biomeString.substring(1).toLowerCase();
+	}
+
+	
+}

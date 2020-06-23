@@ -1,0 +1,56 @@
+# NexelWilderness
+# By: Nathan Diepeveen / Nexel
+# ----------------------------------
+
+#
+#
+# The prefix is visible in front of a command reply. To use a color, type & followed by the color number. 
+# For example: &a = Green.
+#
+# Default prefix: '&5&lNexel&f&lWilderness &7&l>'
+prefix: '&5&lNexel&f&lWilderness &7&l>'
+#
+# The menuprefix is visible in menu's.
+#
+# Default menuprefix: 'NexelWilderness'
+menuprefix: 'NexelWilderness'
+#
+# The size is the size of the wild region. Devide the size by 2 for the amount on the positive and negative side.
+# For example: 10000 is from 5000 to -5000.
+#
+# Default size: 10000
+size: 10000
+#
+# The following list contains all Biomes. The names are modified and then visible in menu's. 
+# For example: 'DESERT_HILLS' becomes 'Desert hills'. Underscores become whitespaces and everything is lower-case except the first letter.
+# 
+# The Biomes are in the following order: <Biome>: <Icon>
+# <Icon> is the block visible in the main Wild menu. Use something that fits the biome.
+#
+# Default Biomes:
+#
+#  FOREST: LOG
+#  DESERT: SAND
+#  TAIGA: DIRT
+#  JUNGLE: MOSSY_COBBLESTONE
+#  PLAINS: GRASS
+Biomes:
+  FOREST: LOG
+  DESERT: SAND
+  TAIGA: DIRT
+  JUNGLE: MOSSY_COBBLESTONE
+  PLAINS: GRASS
+# 
+# These messages are visible when for example commands are executed. 
+# The placeholders only work in the message they're used in. So %wildsize% is unusable in noSafeSpot.
+#
+wildSizeSet: '&aSuccesfully set the wild limit to&l %wildsize%'
+noBlacklistedBlocks: '&fNone. Use&l /wild blacklist <block> &7to add one.'
+removeBlacklistedBlock: '&fUse&l /wild removeblacklist <block> &7to remove one.'
+blockDoesntExist: '&cThis block does not exist! Use: EMERALD_BLOCK, DIRT, etc.'
+succesfullBlacklist: '&aSuccesfully blacklisted&l %blacklistedblock%&r. Players can''t teleport on this block with /wild.'
+removedFromBlacklist: '&aSuccesfully removed&l %removedblock% &rfrom blacklist. Players can now teleport on this block.'
+insufficientDetails: '&cYou provied insufficient details! Usage:&l %usage%'
+noPermissions: '&cYou don''t have permissions to use this command!'
+noSafeSpot: '&cPlease try again. No safe spot found.'
+noBiomeSpot: '&cOh no.. We could not find a spot in this biome. Please try again later.'
