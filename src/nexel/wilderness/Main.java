@@ -91,14 +91,15 @@ public class Main extends JavaPlugin implements Listener {
 				
 			}
 			
-			if (Material.valueOf(args[1].toUpperCase()) == null) {
+			try {
+				Material.valueOf(args[1].toUpperCase());
+			} catch(IllegalArgumentException ex) { 
 				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("blockDoesntExist")));
 				return false;	
 			}
 			
 			getConfig().set("blacklistedBlocks." + args[1].toUpperCase(), 1);
 			saveConfig();
-			
 			currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("removedFromBlacklist").replace("%blacklistedblock%", args[1].toUpperCase())));
 			return true;
 			
@@ -108,7 +109,9 @@ public class Main extends JavaPlugin implements Listener {
 			
 			if (errorCatcher(args.length, 2, "/wild removeblacklist <name>", currentPlayer) == true) return false;
 			
-			if (Material.valueOf(args[1].toUpperCase()) == null) {
+			try {
+				Material.valueOf(args[1].toUpperCase());
+			} catch(IllegalArgumentException ex) { 
 				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("blockDoesntExist")));
 				return false;	
 			}
