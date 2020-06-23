@@ -1,4 +1,4 @@
-main: nexel.wilderness.Main
+main: nexel.wilderness.CommandHandler
 name: NexelWilderness
 version: 0.1
 author: NathanDiepeveen
