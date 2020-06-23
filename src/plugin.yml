@@ -2,7 +2,7 @@ main: nexel.wilderness.CommandHandler
 name: NexelWilderness
 version: 0.1
 author: NathanDiepeveen
-description: Simple wilderness command.
+description: An easy to use /wild plugin with Biome wilding.
 api-version: 1.15
 commands:
    wild:
