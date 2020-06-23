@@ -13,9 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class InventoryClass {
 
-	private Main main;
+	private CommandHandler main;
 
-	public InventoryClass(Main main){
+	public InventoryClass(CommandHandler main){
 	    this.main = main;
 	}
 	
@@ -25,7 +25,7 @@ public class InventoryClass {
 	public void biomeChooser(Player currentPlayer) {
 		
 		mapChooserInventory = Bukkit.createInventory(null, 36, main.getConfig().getString("menuprefix"));
-		inventoryClearer(currentPlayer);
+		inventoryClearer(currentPlayer, 36);
 		
 		if (main.getConfig().isSet("Biomes")) {
 			int i = 0;
@@ -39,18 +39,31 @@ public class InventoryClass {
 			mapChooserInventory.setItem(0, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&cNo biomes have been set."), ChatColor.translateAlternateColorCodes('&', "&7&oUse the diamond to wild to a random biome.")));
 		}
 		
-		currentItem = new ItemStack(Material.DIAMOND);
-		mapChooserInventory.setItem(31, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&6Random biome"), ChatColor.translateAlternateColorCodes('&', "&7&oClick to teleport.")));
 		currentItem = new ItemStack(Material.ARROW);
-		mapChooserInventory.setItem(27, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&cClose"), ChatColor.translateAlternateColorCodes('&', "&7&oClick to close.")));
+		mapChooserInventory.setItem(27, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&cBack"), ChatColor.translateAlternateColorCodes('&', "&7&oClick to go back.")));
 		currentPlayer.openInventory(mapChooserInventory);
 		
 	}
 	
-	public void inventoryClearer(Player currentPlayer) {
+	public void mainWildMenu(Player currentPlayer) {
+		
+		mapChooserInventory = Bukkit.createInventory(null, 27, main.getConfig().getString("menuprefix"));
+		inventoryClearer(currentPlayer, 27);
+		
+		currentItem = new ItemStack(Material.DIAMOND);
+		mapChooserInventory.setItem(14, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&6Random biome"), ChatColor.translateAlternateColorCodes('&', "&7&oClick to teleport.")));
+		currentItem = new ItemStack(Material.GRASS);
+		mapChooserInventory.setItem(12, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&aPick a biome"), ChatColor.translateAlternateColorCodes('&', "&7&oClick to open biome picker.")));
+		currentItem = new ItemStack(Material.ARROW);
+		mapChooserInventory.setItem(18, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&cClose"), ChatColor.translateAlternateColorCodes('&', "&7&oClick to close.")));
+		currentPlayer.openInventory(mapChooserInventory);
+		
+	}
+	
+	public void inventoryClearer(Player currentPlayer, int length) {
 		
 		ItemStack emptyItem = new ItemStack(Material.AIR);
-		for(int i = 0; i < 36; i++) mapChooserInventory.setItem(i, emptyItem);
+		for(int i = 0; i < length; i++) mapChooserInventory.setItem(i, emptyItem);
 		
 	}
 	
