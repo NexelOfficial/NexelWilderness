@@ -56,6 +56,10 @@ public class InventoryClass {
 		mapChooserInventory.setItem(12, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&aPick a biome"), ChatColor.translateAlternateColorCodes('&', "&7&oClick to open biome picker.")));
 		currentItem = new ItemStack(Material.ARROW);
 		mapChooserInventory.setItem(18, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&cClose"), ChatColor.translateAlternateColorCodes('&', "&7&oClick to close.")));
+		if (currentPlayer.hasPermission("nexelwilderness.admin.help")) {
+			currentItem = new ItemStack(Material.BOOK);
+			mapChooserInventory.setItem(26, newItem(currentItem, ChatColor.translateAlternateColorCodes('&', "&fUse /wild help for more options"), ChatColor.translateAlternateColorCodes('&', "&7&oClick to close and run /wild help.")));
+		}
 		currentPlayer.openInventory(mapChooserInventory);
 		
 	}
