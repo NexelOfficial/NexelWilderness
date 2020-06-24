@@ -141,7 +141,6 @@ public class CommandHandler extends JavaPlugin implements Listener {
 			
 			if (args[0].equalsIgnoreCase("help")) {
 				
-				String prefix = getConfig().getString("prefix") + "&r ";
 				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aAll commands for /wild:"));
 				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild (The main Wild command.)"));
 				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild size <size> (Sets the size of the wild region.)"));
@@ -178,7 +177,7 @@ public class CommandHandler extends JavaPlugin implements Listener {
 	     Player currentPlayer = (Player) event.getWhoClicked();
 
 	     try {
-	    	 Biome biomePickerBiome = Biome.valueOf(ChatColor.stripColor(displayName.toUpperCase().replace(" ", "_")));
+	    	 Biome.valueOf(ChatColor.stripColor(displayName.toUpperCase().replace(" ", "_")));
 	    	 biomeWild(ChatColor.stripColor(displayName.toUpperCase().replace(" ", "_")), currentPlayer);
 	    	 currentPlayer.closeInventory(); return;
 	     } catch (Exception ex) {
