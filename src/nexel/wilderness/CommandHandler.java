@@ -50,6 +50,17 @@ public class CommandHandler extends JavaPlugin implements Listener {
 		
 		if (args.length == 0) {
 			
+			if (getConfig().isSet("blacklistedWorlds")) {
+				String[] worlds = getConfig().getString("blacklistedWorlds").trim().split(",");
+				for (String worldString : worlds) {
+					World world = getServer().getWorld(worldString);
+					if (currentPlayer.getWorld() == world) {
+						String prefix = getConfig().getString("prefix") + "&r ";
+						currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("noWildAllowed")));
+						return false;						
+					}
+				}
+			}
 			inventoryClass.mainWildMenu(currentPlayer);
 			return true;
 			
