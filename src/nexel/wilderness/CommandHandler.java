@@ -162,8 +162,11 @@ public class CommandHandler extends JavaPlugin implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
 		
 		 InventoryHolder inventoryHolder = event.getInventory().getHolder();
-		 
-		 if (inventoryHolder != inventoryClass.mapChooserInventory.getHolder()) return;
+		 try {
+			 if (inventoryHolder != inventoryClass.mapChooserInventory.getHolder()) return;
+		 } catch(NullPointerException ex) {
+			 return;
+		 }
 		 if (event.getView().getTitle()!=getConfig().getString("menuprefix")) return;
 		 event.setCancelled(true);
 		 if (event.getCurrentItem() == null) return;
@@ -174,24 +177,17 @@ public class CommandHandler extends JavaPlugin implements Listener {
 	     if (displayName==null || displayName==" ") return;
 	     Player currentPlayer = (Player) event.getWhoClicked();
 
-	     if (displayName.contains("Forest")) {
-	    	 currentPlayer.closeInventory();
-	    	 biomeWild("Forest", currentPlayer); return;
-		 } if (displayName.contains("Desert")) {
-		     currentPlayer.closeInventory();
-		     biomeWild("Desert", currentPlayer); return;
-		 } if (displayName.contains("Plains")) {
-	    	 currentPlayer.closeInventory();
-	    	 biomeWild("Plains", currentPlayer); return;
-		 } if (displayName.contains("Jungle")) {
-		     currentPlayer.closeInventory();
-		     biomeWild("Jungle", currentPlayer); return;
-		 } if (displayName.contains("Taiga")) {
-		     currentPlayer.closeInventory();
-		     biomeWild("Taiga", currentPlayer); return;
-		 } if (displayName.contains("Random biome")) {
-		     currentPlayer.closeInventory();
-		     normalWild(currentPlayer); return;
+	     try {
+	    	 Biome biomePickerBiome = Biome.valueOf(ChatColor.stripColor(displayName.toUpperCase().replace(" ", "_")));
+	    	 biomeWild(ChatColor.stripColor(displayName.toUpperCase().replace(" ", "_")), currentPlayer);
+	    	 currentPlayer.closeInventory(); return;
+	     } catch (Exception ex) {
+
+	     } 
+	     
+	     if (displayName.contains("Random biome")) {
+		     normalWild(currentPlayer);
+		     currentPlayer.closeInventory(); return;
 		 } if (displayName.contains("Close")) {
 		     currentPlayer.closeInventory();
 		     return;
@@ -201,6 +197,9 @@ public class CommandHandler extends JavaPlugin implements Listener {
 		 } if (displayName.contains("Back")) {
 			 inventoryClass.mainWildMenu(currentPlayer);
 		     return;
+		 } if (displayName.contains("Use /wild help for more options")) {
+		     currentPlayer.closeInventory();
+		     currentPlayer.performCommand("wild help"); return;
 		 }
 		 
 	}
