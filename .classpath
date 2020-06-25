@@ -6,6 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="/home/nathandiepeveen/Downloads/spigot-api-1.15.2-R0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="/home/nathandiepeveen/Downloads/Spigot/Spigot-API/target/spigot-api-1.16.1-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

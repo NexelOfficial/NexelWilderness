@@ -30,7 +30,7 @@ public class CommandHandler extends JavaPlugin implements Listener {
 		
     	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &fNexelWilderness BETA has been enabled!"));
     	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &fThis is a Beta build. Things will break!"));
-    	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &aCreated with &clove  &aby Nathan Diepeveen"));
+    	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &aCreated with &clove &aby Nathan Diepeveen"));
     	
     	saveDefaultConfig();
     	
