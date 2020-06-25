@@ -53,6 +53,8 @@ noPermissions: '&cYou don''t have permissions to use this command!'
 noSafeSpot: '&cPlease try again. No safe spot found.'
 noBiomeSpot: '&cOh no.. We could not find a spot in this biome. Please try again later.'
 noWildAllowed: '&cYou cannot use /wild in this world!'
+biomeAdded: '&aSuccesfully added the &l%biome%&a biome with a &l%block%&a icon.'
+biomeRemoved: '&aSuccesfully removed the &l%biome%&a biome.'
 #
 # The blacklisted worlds are not allowed to be wilded in. 
 # That is usefull in for example the nether / end or lobby worlds etc.
