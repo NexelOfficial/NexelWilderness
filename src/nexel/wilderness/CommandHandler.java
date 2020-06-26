@@ -1,6 +1,7 @@
 package nexel.wilderness;
 
 
+
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
+import nexel.wilderness.Metrics;
 
 
 public class CommandHandler extends JavaPlugin implements Listener {
@@ -33,6 +35,9 @@ public class CommandHandler extends JavaPlugin implements Listener {
     	getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&5Nexel&fWilderness &7> &aCreated with &clove &aby Nathan Diepeveen"));
     	
     	saveDefaultConfig();
+    	
+        int pluginId = 7969; // <-- Replace with the id of your plugin!
+        Metrics metrics = new Metrics(this, pluginId);
     	
 	}
 	
@@ -202,7 +207,7 @@ public class CommandHandler extends JavaPlugin implements Listener {
 				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild /wild biome add/remove <biome> <icon> (Add / remove a new biome to the biome picker.)"));
 				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild blacklist (Add and show blacklisted blocks.)"));
 				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild removeblacklist <block> (Remove a block from the blacklist)"));
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aThere are so much more options in te config! Customize the plugin to your needs."));
+				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aThere are so much more options in the config! Customize the plugin to your needs."));
 				return true;
 				
 			}
