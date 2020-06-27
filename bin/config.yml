@@ -42,13 +42,14 @@ Biomes:
 # These messages are visible when for example commands are executed. 
 # The placeholders only work in the message they're used in. So %wildsize% is unusable in noSafeSpot.
 wildSizeSet: '&aSuccesfully set the wild limit to&l %wildsize%'
-noBlacklistedBlocks: '&7None. Use&l /wild blacklist <block> &7to add one.'
-removeBlacklistedBlock: '&7Use&l /wild removeblacklist <block> &7to remove one.'
+noBlacklistedBlocks: '&7None. Use&l /wild blacklist add <block> &7to add one.'
+removeBlacklistedBlock: '&7Use&l /wild blacklist remove <block> &7to remove one.'
 blockDoesntExist: '&cThis block does not exist! Use: EMERALD_BLOCK, DIRT, etc.'
 succesfullBlacklist: '&aSuccesfully blacklisted&l %blacklistedblock%&a. Players can''t teleport on this block with /wild.'
 removedFromBlacklist: '&aSuccesfully removed&l %removedblock% &afrom blacklist. Players can now teleport on this block.'
 insufficientDetails: '&cYou provied insufficient details! Usage:&l %usage%'
 noPermissions: '&cYou don''t have permissions to use this command!'
+succesfullReload: '&aReloaded the plugin and it''s configuration!'
 noSafeSpot: '&cPlease try again. No safe spot found.'
 noBiomeSpot: '&cOh no.. We could not find a spot in this biome. Please try again later.'
 noWildAllowed: '&cYou cannot use /wild in this world!'
@@ -73,6 +74,34 @@ mainIcons:
   backClose: ARROW
   helpCommand: BOOK
   
+# The main text is the text that display in the main menu.
+# Change it to whatever you like! 
+# Usage:
+# Key:
+# - 'Title'
+# - 'Lore line 1'
+# - 'Lore line 2'
+# - 'etc.'
+mainText:
+  randomBiome: 
+  - '&6Random biome'
+  - '&7&oClick to teleport.'
+  biomePicker: 
+  - '&aPick a biome'
+  - '&7&oClick to open biome picker.'
+  backClose: 
+  - '&cClose'
+  - '&7&oClick to close.'
+  helpCommand: 
+  - '&fUse /wild help for more options' 
+  - '&7&oClick to close and run /wild help.'
+  noBiomes:
+  - '&cNo biomes have been set.'
+  - '&7&oUse the diamond to wild to a random biome.'
+  biome:
+  - '&a%biome%' 
+  - '&7&oClick to teleport.'
+
 # These are blacklisted blocks.
 # You can not teleport on them with /wild.
 # Keep in mind: In Minecraft 1.12 and older you will need to add both LAVA and STATIONARY_LAVA. Same goes for WATER.
