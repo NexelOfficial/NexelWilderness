@@ -19,11 +19,19 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 import nexel.wilderness.Metrics;
+import nexel.wilderness.commands.BiomeCommand;
+import nexel.wilderness.commands.BlacklistCommand;
+import nexel.wilderness.commands.HelpCommand;
+import nexel.wilderness.commands.SizeCommand;
 
 
 public class CommandHandler extends JavaPlugin implements Listener {
 	
 	InventoryClass inventoryClass = new InventoryClass(this);
+	SizeCommand sizeCommand = new SizeCommand(this);
+	BlacklistCommand blacklistCommand = new BlacklistCommand(this);
+	BiomeCommand biomeCommand = new BiomeCommand(this);
+	HelpCommand helpCommand = new HelpCommand(this);
 	
 	@Override
     public void onEnable() {	
@@ -70,146 +78,42 @@ public class CommandHandler extends JavaPlugin implements Listener {
 			
 		}
 		
-		if (currentPlayer.hasPermission("nexelwilderness.admin.biome") && currentPlayer.hasPermission("nexelwilderness.admin.*")) {
-		
-			if (args[0].equalsIgnoreCase("biome")) {
-				
-				String prefix = getConfig().getString("prefix") + "&r ";
-				if (errorCatcher(args.length, 4, "/wild biome add/remove <biome> <icon>", currentPlayer) == true) return false;
-				
-				try {
-					Material.valueOf(args[3].toUpperCase());
-				} catch(IllegalArgumentException ex) { 
-					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("blockDoesntExist")));
-					return false;	
-				}
-				
-				try {
-					Biome.valueOf(args[2].toUpperCase());
-				} catch(IllegalArgumentException ex) { 
-					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("blockDoesntExist")));
-					return false;	
-				}
-				
-				if (!(args[1].equalsIgnoreCase("add")) && !(args[1].equalsIgnoreCase("remove"))) {
-					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("insufficientDetails").replace("%usage%", "/wild biome add/remove <biome> <icon>")));
-					return true;
-				}
-				
-				if (args[1].equalsIgnoreCase("add")) {
-				    getConfig().set("Biomes." + args[2].toUpperCase(), args[3].toUpperCase());
-					saveConfig();
-					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("biomeAdded").replace("%biome%", args[2].toUpperCase()).replace("%block%", args[3].toUpperCase())));
-					return true;
-				} else if (args[1].equalsIgnoreCase("remove")) {
-				    getConfig().set("Biomes." + args[2].toUpperCase(), null);
-					saveConfig();
-					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("biomeRemoved").replace("%biome%", args[2].toUpperCase())));
-					return true;
-				}
-				
-				return true; 
-				
-			}
+		if (args[0].equalsIgnoreCase("biome")) {
+			
+			if (biomeCommand.biomeCommand(currentPlayer, args) == true);
+			return true;
 			
 		}
-		
-		if (currentPlayer.hasPermission("nexelwilderness.admin.size") && currentPlayer.hasPermission("nexelwilderness.admin.*")) {
 			
-			if (args[0].equalsIgnoreCase("size")) {
-				
-				String prefix = getConfig().getString("prefix") + "&r ";
-				if (errorCatcher(args.length, 2, "/wild size <size>", currentPlayer) == true) return false;
-				
-				getConfig().set("size", args[1]);
-				saveConfig();
-				
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("wildSizeSet").replace("%wildsize%", Integer.parseInt(args[1])/2 + "&r,&l -" + Integer.parseInt(args[1])/2)));
-				return true; 
-				
-			}
+		if (args[0].equalsIgnoreCase("size")) {
 			
-		}
-		
-		if (currentPlayer.hasPermission("nexelwilderness.admin.blacklist") && currentPlayer.hasPermission("nexelwilderness.admin.*")) {
-			
-			if (args[0].equalsIgnoreCase("blacklist")) {
-				
-				String prefix = getConfig().getString("prefix") + "&r ";
-				if (args.length == 1) {
-					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + "Blacklisted blocks:"));
-						
-					if (!(getConfig().isSet("blacklistedBlocks"))) {
-						currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + getConfig().getString("noBlacklistedBlocks")));
-						return true;
-					}
-					if (getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false).size() == 0) {
-						currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + getConfig().getString("noBlacklistedBlocks")));
-						return true;
-					}
-					
-					for(String block : getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false)) 
-						currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + block));
-					
-					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + getConfig().getString("removeBlacklistedBlock")));
-					return true;
-					
-				}
-				
-				try {
-					Material.valueOf(args[1].toUpperCase());
-				} catch(IllegalArgumentException ex) { 
-					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("blockDoesntExist")));
-					return false;	
-				}
-				
-				getConfig().set("blacklistedBlocks." + args[1].toUpperCase(), 1);
-				saveConfig();
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("succesfullBlacklist").replace("%blacklistedblock%", args[1].toUpperCase())));
+			if (sizeCommand.sizeCommand(currentPlayer, args) == true);
 				return true;
 				
-			} 
+		}
+		
+		if (args[0].equalsIgnoreCase("blacklist")) {
+				
+			if (blacklistCommand.blacklistCommand(currentPlayer, args) == true);
+				return true;	
+			
+		} 
+		if (args[0].equalsIgnoreCase("help")) {
+			
+			if (helpCommand.helpCommand(currentPlayer, args) == true);
+				return true;
 			
 		}
 		
-		if (currentPlayer.hasPermission("nexelwilderness.admin.removeblacklist") && currentPlayer.hasPermission("nexelwilderness.admin.*")) {
+		if (args[0].equalsIgnoreCase("reload")) {
 			
-			if (args[0].equalsIgnoreCase("removeblacklist")) {
-				
-				String prefix = getConfig().getString("prefix") + "&r ";
-				if (errorCatcher(args.length, 2, "/wild removeblacklist <name>", currentPlayer) == true) return false;
-				
-				try {
-					Material.valueOf(args[1].toUpperCase());
-				} catch(IllegalArgumentException ex) { 
-					currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("blockDoesntExist")));
-					return false;	
-				}
-				
-				getConfig().set("blacklistedBlocks." + args[1].toUpperCase(), null);
-				saveConfig();
-				
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("removedFromBlacklist").replace("%removedblock%", args[1].toUpperCase())));
-				return true;
-				
-			}
+			if (!(currentPlayer.hasPermission("nexelwilderness.admin.reload") && currentPlayer.hasPermission("nexelwilderness.admin.*"))) 
+				return false;
+			String prefix = getConfig().getString("prefix") + "&r ";
+			reloadConfig();
+			currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + getConfig().getString("succesfullReload")));
+			return true;
 			
-		}
-		
-		if (currentPlayer.hasPermission("nexelwilderness.admin.help") && currentPlayer.hasPermission("nexelwilderness.admin.*")) {
-			
-			if (args[0].equalsIgnoreCase("help")) {
-				
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aAll commands for /wild:"));
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild (The main Wild command.)"));
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild size <size> (Sets the size of the wild region.)"));
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild /wild biome add/remove <biome> <icon> (Add / remove a new biome to the biome picker.)"));
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild blacklist (Add and show blacklisted blocks.)"));
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7/wild removeblacklist <block> (Remove a block from the blacklist)"));
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aThere are so much more options in the config! Customize the plugin to your needs."));
-				return true;
-				
-			}
 			
 		}
 	
