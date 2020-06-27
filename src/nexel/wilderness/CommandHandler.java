@@ -36,8 +36,7 @@ public class CommandHandler extends JavaPlugin implements Listener {
     	
     	saveDefaultConfig();
     	
-        int pluginId = 7969; // <-- Replace with the id of your plugin!
-        Metrics metrics = new Metrics(this, pluginId);
+        Metrics metrics = new Metrics(this, 7969);
     	
 	}
 	
