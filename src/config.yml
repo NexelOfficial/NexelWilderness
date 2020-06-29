@@ -6,20 +6,20 @@
 
 # The prefix is visible in front of a command reply. To use a color, type & followed by the color number. 
 # For example: &a = Green.
-#
-# Default prefix: '&5&lNexel&f&lWilderness &7&l>'
 prefix: '&5&lNexel&f&lWilderness &7&l>'
 
 # The menuprefix is visible in menu's.
-#
-# Default menuprefix: 'NexelWilderness'
 menuprefix: 'NexelWilderness'
 
 # The size is the size of the wild region. Devide the size by 2 for the amount on the positive and negative side.
 # For example: 10000 is from 5000 to -5000.
-#
-# Default size: 10000
 size: 10000
+
+# The teleport delay is the amount of seconds it takes before teleporting. During that period the person should not move.
+teleportDelay: 3
+
+# The teleport cooldown is the time players have to wait before being able to wild again. The time is in seconds.
+wildCooldown: 30
 
 # The following list contains all Biomes. The names are modified and then visible in menu's. 
 # For example: 'DESERT_HILLS' becomes 'Desert hills'. Underscores become whitespaces and everything is lower-case except the first letter.
@@ -55,6 +55,9 @@ noBiomeSpot: '&cOh no.. We could not find a spot in this biome. Please try again
 noWildAllowed: '&cYou cannot use /wild in this world!'
 biomeAdded: '&aSuccesfully added the &l%biome%&a biome with a &l%block%&a icon.'
 biomeRemoved: '&aSuccesfully removed the &l%biome%&a biome.'
+delayedTeleport: '&aTeleporting in %time% seconds...'
+cooldownNotOver: '&cYou must wait %cooldown% seconds before teleporting again!'
+teleporting: '&aTeleporting...'
 
 # The blacklisted worlds are not allowed to be wilded in. 
 # That is usefull in for example the nether / end or lobby worlds etc.
@@ -105,14 +108,7 @@ mainText:
 # These are blacklisted blocks.
 # You can not teleport on them with /wild.
 # Keep in mind: In Minecraft 1.12 and older you will need to add both LAVA and STATIONARY_LAVA. Same goes for WATER.
-# Default blacklistedBlocks:
-#  WATER: 1
-#  CACTUS: 1
-#  MAGMA_BLOCK: 1
-#  COBWEB: 1
-#  LAVA: 1
 blacklistedBlocks:
-  WATER: 1
   CACTUS: 1
   MAGMA_BLOCK: 1
   COBWEB: 1
