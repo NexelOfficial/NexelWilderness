@@ -3,6 +3,7 @@ package nexel.wilderness.commands;
 import nexel.wilderness.CommandHandler;
 import nexel.wilderness.tools.CheckTools;
 import nexel.wilderness.tools.Messages;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SizeCommand {
@@ -12,14 +13,14 @@ public class SizeCommand {
 		this.main = main;
 	}
 
-    public boolean sizeCommand(Player currentPlayer, String[] args) {
+    public boolean sizeCommand(CommandSender sender, String[] args) {
         // Check of permissions
-        if (!main.hasPermission(currentPlayer, "nexelwilderness.admin.size")) {
+        if (!main.hasPermission(sender, "nexelwilderness.admin.size")) {
 			return false;
 		}
 
         // Catch errors
-        if (main.errorCatcher(args.length, 2, "/wild size <size>", currentPlayer)) {
+        if (main.errorCatcher(args.length, 2, "/wild size <size>", sender)) {
 			return false;
 		}
 
@@ -31,7 +32,7 @@ public class SizeCommand {
         int size = Integer.parseInt(args[1]);
 
         setSize(size);
-        currentPlayer.sendMessage(main.coloredString(Messages.prefix + Messages.wildSizeSet
+        sender.sendMessage(main.coloredString(Messages.prefix + Messages.wildSizeSet
                 .replace("%wildsize%", size / 2 + ", -" + size / 2)));
         return true;
     }

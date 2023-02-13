@@ -3,6 +3,7 @@ package nexel.wilderness.commands;
 import nexel.wilderness.CommandHandler;
 import nexel.wilderness.tools.CheckTools;
 import nexel.wilderness.tools.Messages;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BiomeCommand {
@@ -12,14 +13,14 @@ public class BiomeCommand {
 		this.main = main;
 	}
 
-    public boolean biomeCommand(Player currentPlayer, String[] args) {
+    public boolean biomeCommand(CommandSender sender, String[] args) {
         // Check if user has permission
-        if (!main.hasPermission(currentPlayer, "nexelwilderness.admin.biome")) {
-			return false;
-		}
+        if (!main.hasPermission(sender, "nexelwilderness.admin.biome")) {
+            return false;
+        }
 
         // Catch errors in the command
-        if (main.errorCatcher(args.length, 4, "/wild biome add/remove <biome> <icon>", currentPlayer)) {
+        if (main.errorCatcher(args.length, 4, "/wild biome add/remove <biome> <icon>", sender)) {
 			return false;
 		}
 
@@ -33,13 +34,13 @@ public class BiomeCommand {
 
         // Check if material exists
         if (!CheckTools.materialExists(material)) {
-            currentPlayer.sendMessage(main.coloredString(prefix + Messages.blockDoesntExist));
+            sender.sendMessage(main.coloredString(prefix + Messages.blockDoesntExist));
             return false;
         }
 
         // Checking the biome
-        if (CheckTools.biomeExists(biome) != null) {
-            currentPlayer.sendMessage(main.coloredString(prefix + Messages.biomeDoesntExist));
+        if (CheckTools.biomeExists(biome) == null) {
+            sender.sendMessage(main.coloredString(prefix + Messages.biomeDoesntExist));
             return false;
         }
 
@@ -47,19 +48,19 @@ public class BiomeCommand {
         if (removeBiome) {
 			// Remove command
             removeBiome(biome);
-            currentPlayer.sendMessage(main.coloredString(prefix + Messages.biomeRemoved
+            sender.sendMessage(main.coloredString(prefix + Messages.biomeRemoved
                     .replace("%biome%", biome)));
             return true;
         } else if (addBiome) {
 			// Add command
             addBiome(biome, material);
-            currentPlayer.sendMessage(main.coloredString(prefix + Messages.biomeAdded
+            sender.sendMessage(main.coloredString(prefix + Messages.biomeAdded
                     .replace("%biome%", biome)
                     .replace("%block%", material)));
             return true;
         } else {
 			// Wrong usage
-            currentPlayer.sendMessage(main.coloredString(prefix + Messages.insufficientDetails
+            sender.sendMessage(main.coloredString(prefix + Messages.insufficientDetails
                     .replace("%usage%", "/wild biome add/remove <biome> <icon>")));
             return true;
         }

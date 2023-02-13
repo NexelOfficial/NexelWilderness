@@ -27,7 +27,7 @@ biomePicker: true
 # Higher numbers could result in higher TPS (More lag).
 # Lower numbers could result in not (or less often) finding the correct biome.
 # In a preloaded world, this number can be set up to 150 without any noticable drops in TPS.
-# If your world is not preloaded, this number should be limited to around 30 to prevent noticable drops in TPS.
+# If your world is not preloaded, this number should be limited to around 20 to prevent noticable drops in TPS.
 retries: 75
 
 # The following list contains all Biomes. The names are modified and then visible in menu's. 
@@ -49,12 +49,13 @@ Biomes:
 # These messages are visible when for example commands are executed. 
 # The placeholders only work in the message they're used in. So %wildsize% is unusable in noSafeSpot.
 wildSizeSet: '&aSuccesfully set the wild limit to&l %wildsize%'
+retriesSet: '&aSuccesfully set the retry amount to&l %retries%.'
 noBlacklistedBlocks: '&7None. Use&l /wild blacklist add <block> &7to add one.'
 removeBlacklistedBlock: '&7Use&l /wild blacklist remove <block> &7to remove one.'
 blockDoesntExist: '&cThis block does not exist! Use: EMERALD_BLOCK, DIRT, etc.'
 biomeDoesntExist: '&cThis biome does not exist! Use: DESERT, DESERT_HILLS, etc.'
-succesfullBlacklist: '&aSuccesfully blacklisted&l %blacklistedblock%&a. Players can''t teleport on this block with /wild.'
-removedFromBlacklist: '&aSuccesfully removed&l %removedblock% &afrom blacklist. Players can now teleport on this block.'
+succesfullBlacklist: '&aSuccesfully blacklisted &l%blacklistedblock%&a. Players can''t teleport on this block with /wild.'
+removedFromBlacklist: '&aSuccesfully removed &l%removedblock%&a from blacklist. Players can now teleport on this block.'
 insufficientDetails: '&cYou provied insufficient details! Usage:&l %usage%'
 noPermissions: '&cYou don''t have permissions to use this command!'
 succesfullReload: '&aReloaded the plugin and it''s configuration!'
@@ -68,6 +69,7 @@ cooldownNotOver: '&cYou must wait %cooldown% before teleporting again!'
 interuptedTeleport: '&cYou moved! Teleportation cancelled.'
 teleporting: '&aTeleporting...'
 errorTeleporting: '&cThere was an error teleporting you!'
+succesfulTeleport: '&aSuccesfully teleported %player% to a random location.'
 
 # The blacklisted worlds are not allowed to be wilded in. 
 # That is usefull in for example the nether / end or lobby worlds etc.

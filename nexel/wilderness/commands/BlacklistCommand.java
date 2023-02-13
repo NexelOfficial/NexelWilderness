@@ -4,6 +4,7 @@ import nexel.wilderness.CommandHandler;
 import nexel.wilderness.tools.CheckTools;
 import nexel.wilderness.tools.Messages;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BlacklistCommand {
@@ -13,9 +14,9 @@ public class BlacklistCommand {
 		this.main = main;
 	}
 
-    public boolean blacklistCommand(Player currentPlayer, String[] args) {
+    public boolean blacklistCommand(CommandSender sender, String[] args) {
         // Check for permissions
-        if (!main.hasPermission(currentPlayer, "nexelwilderness.admin.blacklist")) {
+        if (!main.hasPermission(sender, "nexelwilderness.admin.blacklist")) {
 			return false;
 		}
 
@@ -23,27 +24,27 @@ public class BlacklistCommand {
 
         // List all blacklisted blocks
         if (args.length == 1) {
-            currentPlayer.sendMessage(main.coloredString(prefix + "Blacklisted blocks:"));
+            sender.sendMessage(main.coloredString(prefix + "Blacklisted blocks:"));
 
             if (!(main.getConfig().isSet("blacklistedBlocks"))) {
-                currentPlayer.sendMessage(main.coloredString("&7" + Messages.noBlacklistedBlocks));
+                sender.sendMessage(main.coloredString("&7" + Messages.noBlacklistedBlocks));
                 return true;
             }
 
             if (main.getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false).size() == 0) {
-                currentPlayer.sendMessage(main.coloredString("&7" + Messages.noBlacklistedBlocks));
+                sender.sendMessage(main.coloredString("&7" + Messages.noBlacklistedBlocks));
                 return true;
             }
 
             for (String block : main.getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false)) {
-				currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + block));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + block));
 			}
 
-            currentPlayer.sendMessage(main.coloredString("&7" + Messages.removeBlacklistedBlock));
+            sender.sendMessage(main.coloredString("&7" + Messages.removeBlacklistedBlock));
             return true;
         }
 
-        if (main.errorCatcher(args.length, 3, "/wild blacklist add/remove <block>", currentPlayer)) {
+        if (main.errorCatcher(args.length, 3, "/wild blacklist add/remove <block>", sender)) {
 			return false;
 		}
 
@@ -56,27 +57,27 @@ public class BlacklistCommand {
         if (shouldAdd) {
 			// Add a new blacklist block
             if (!CheckTools.materialExists(material)) {
-                currentPlayer.sendMessage(main.coloredString(prefix + Messages.blockDoesntExist));
+                sender.sendMessage(main.coloredString(prefix + Messages.blockDoesntExist));
                 return false;
             }
 
             addBlacklist(material);
-            currentPlayer.sendMessage(main.coloredString(prefix + Messages.succesfullBlacklist
+            sender.sendMessage(main.coloredString(prefix + Messages.succesfullBlacklist
                     .replace("%blacklistedblock%", material)));
             return true;
         } else if (shouldRemove) {
 			// Remove a blacklist block
             if (!CheckTools.materialExists(material)) {
-                currentPlayer.sendMessage(main.coloredString(prefix + Messages.blockDoesntExist));
+                sender.sendMessage(main.coloredString(prefix + Messages.blockDoesntExist));
                 return false;
             }
 
             removeBlacklist(material);
-            currentPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + Messages.removedFromBlacklist
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + Messages.removedFromBlacklist
                     .replace("%removedblock%", material)));
             return true;
         } else {
-            currentPlayer.sendMessage(main.coloredString(prefix + Messages.insufficientDetails
+            sender.sendMessage(main.coloredString(prefix + Messages.insufficientDetails
                     .replace("%usage%", "/wild blacklist add/remove <block>")));
             return true;
         }

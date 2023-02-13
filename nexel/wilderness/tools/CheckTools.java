@@ -19,7 +19,7 @@ public class CheckTools {
         try {
             String biomeNoRichtext = ChatColor.stripColor(biome.toUpperCase().replace(" ", "_"));
             return Biome.valueOf(biomeNoRichtext);
-        } catch (NumberFormatException ex) {
+        } catch (IllegalArgumentException ex) {
             return null;
         }
     }

@@ -3,8 +3,6 @@ package nexel.wilderness.tools;
 import nexel.wilderness.CommandHandler;
 
 public class Messages {
-    private static CommandHandler main;
-
     public static String insufficientDetails;
     public static String noWildAllowed;
     public static String noPermissions;
@@ -18,6 +16,7 @@ public class Messages {
     public static String noSafeSpot;
     public static String teleporting;
     public static String errorTeleporting;
+    public static String succesfulTeleport;
 
     // Biome Strings
     public static String biomeDoesntExist;
@@ -31,7 +30,7 @@ public class Messages {
     public static String removedFromBlacklist;
 
     // Size String
-    public static String wildSizeSet;
+    public static String wildSizeSet, retriesSet, retriesWarning;
 
     // Bools
     public static boolean advancedBiomes;
@@ -42,8 +41,6 @@ public class Messages {
     public static int retries;
 
     public static void init(CommandHandler main) {
-        Messages.main = main;
-
         insufficientDetails = main.getConfig().getString("insufficientDetails");
         noWildAllowed = main.getConfig().getString("noWildAllowed");
         noPermissions = main.getConfig().getString("noPermissions");
@@ -57,6 +54,7 @@ public class Messages {
         noSafeSpot = main.getConfig().getString("noSafeSpot");
         teleporting = main.getConfig().getString("teleporting");
         errorTeleporting = main.getConfig().getString("errorTeleporting");
+        succesfulTeleport = main.getConfig().getString("succesfulTeleport");
 
         biomeDoesntExist = main.getConfig().getString("biomeDoesntExist");
         biomeRemoved = main.getConfig().getString("biomeRemoved");
@@ -67,6 +65,8 @@ public class Messages {
         succesfullBlacklist = main.getConfig().getString("succesfullBlacklist");
         removedFromBlacklist = main.getConfig().getString("removedFromBlacklist");
         wildSizeSet = main.getConfig().getString("wildSizeSet");
+        retriesSet = main.getConfig().getString("retriesSet");
+        retriesWarning = main.getConfig().getString("retriesWarning");
 
         advancedBiomes = main.getConfig().getBoolean("advancedBiomes");
         biomePicker = main.getConfig().getBoolean("biomePicker");
