@@ -30,14 +30,14 @@ public class WildInventory {
 		clearInventory(inventory);
 
 		// Add all biomes to the inventory
-		if (main.getConfig().isSet("Biomes")) {
-			ConfigurationSection biomes = main.getConfig().getConfigurationSection("Biomes");
+		if (main.getConfig().isSet("biomes")) {
+			ConfigurationSection biomes = main.getConfig().getConfigurationSection("biomes");
 			assert biomes != null;
 			Set<String> keys = biomes.getKeys(false);
 
 			int i = 0;
 			for (String biome : keys) {
-				String biomeItemString = main.getConfig().getString("Biomes." + biome);
+				String biomeItemString = main.getConfig().getString("biomes." + biome);
 
 				assert biomeItemString != null;
 				ItemStack biomeItem = new ItemStack(getMaterialFromString(biomeItemString));

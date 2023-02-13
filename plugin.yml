@@ -4,6 +4,7 @@ version: '0.12'
 author: NathanDiepeveen
 description: An easy to use /wild plugin with Biome wilding.
 api-version: 1.13
+softdepend: [WorldBorder]
 commands:
   wild:
     description: The base Wilderness command

@@ -12,6 +12,9 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 
+import com.wimbli.WorldBorder.BorderData;
+import com.wimbli.WorldBorder.Config;
+
 public class WildChosenBiome {
     private final Random rand = new Random();
     private final CommandHandler main;
@@ -78,8 +81,28 @@ public class WildChosenBiome {
     private Location newWildLocation(World world, int size) {
         int wildX = (rand.nextInt(size + 1) - size / 2);
         int wildZ = (rand.nextInt(size + 1) - size / 2);
-        int wildY = world.getHighestBlockYAt(wildX, wildZ);
 
+        // Check for WorldBorder and update wildX and wildZ
+        if (main.worldBorderFound) {
+            BorderData border = Config.Border(world.getName());
+
+            if (border != null)
+            {
+                Location wildLocation;
+
+                do {
+                    // Get random position in WorldBorder
+                    int sizeX = border.getRadiusX();
+                    int sizeZ = border.getRadiusZ();
+
+                    wildX = (rand.nextInt(sizeX * 2) - sizeX) + (int) border.getX();
+                    wildZ = (rand.nextInt(sizeZ * 2) - sizeZ) + (int) border.getZ();
+                    wildLocation = new Location(world, wildX, 64, wildZ);
+                } while (!border.insideBorder(wildLocation));
+            }
+        }
+
+        int wildY = world.getHighestBlockYAt(wildX, wildZ);
         return new Location(world, wildX, wildY, wildZ);
     }
 

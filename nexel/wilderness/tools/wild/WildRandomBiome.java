@@ -2,6 +2,8 @@ package nexel.wilderness.tools.wild;
 
 import java.util.Random;
 
+import com.wimbli.WorldBorder.BorderData;
+import com.wimbli.WorldBorder.Config;
 import nexel.wilderness.CommandHandler;
 import nexel.wilderness.tools.CooldownHandler;
 import nexel.wilderness.tools.Messages;
@@ -66,8 +68,28 @@ public class WildRandomBiome {
     private Location newWildLocation(World world, int size) {
         int wildX = (rand.nextInt(size + 1) - size / 2);
         int wildZ = (rand.nextInt(size + 1) - size / 2);
-        int wildY = world.getHighestBlockYAt(wildX, wildZ);
 
+        // Check for WorldBorder and update wildX and wildZ
+        if (main.worldBorderFound) {
+            BorderData border = Config.Border(world.getName());
+
+            if (border != null)
+            {
+                Location wildLocation;
+
+                do {
+                    // Get random position in WorldBorder
+                    int sizeX = border.getRadiusX();
+                    int sizeZ = border.getRadiusZ();
+
+                    wildX = (rand.nextInt(sizeX * 2) - sizeX) + (int) border.getX();
+                    wildZ = (rand.nextInt(sizeZ * 2) - sizeZ) + (int) border.getZ();
+                    wildLocation = new Location(world, wildX, 64, wildZ);
+                } while (!border.insideBorder(wildLocation));
+            }
+        }
+
+        int wildY = world.getHighestBlockYAt(wildX, wildZ);
         return new Location(world, wildX, wildY, wildZ);
     }
 }

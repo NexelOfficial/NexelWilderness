@@ -29,6 +29,8 @@ public class CommandHandler extends JavaPlugin {
     private final InventoryHandler inventory = new InventoryHandler(this, cooldown, teleport);
     private final WorldWildCommand worldWildCommand = new WorldWildCommand(this, cooldown, teleport);
 
+    public boolean worldBorderFound = false;
+
     @Override
     public void onEnable() {
         // Setup events
@@ -49,6 +51,14 @@ public class CommandHandler extends JavaPlugin {
                 saveDefaultConfig();
                 cooldown.startTimer();
                 Messages.init(this);
+
+                // Add support for WorldBorder if in the server
+                if (getServer().getPluginManager().getPlugin("WorldBorder") != null) {
+                    sendColoredMessage("&5Nexel&fWilderness &7> &aWorldBorder plugin has been detected!");
+                    worldBorderFound = true;
+                } else {
+                    sendColoredMessage("&5Nexel&fWilderness &7> &aNo external border plugins were found.");
+                }
                 return;
             }
         }

@@ -1,6 +1,12 @@
 # The size is the size of the wild region. Devide the size by 2 for the amount on the positive and negative side.
 # For example: 10000 is from 5000 to -5000.
+# Size is ignored when using the WorldBorder plugin.
 size: 10000
+
+# Make use of border plugins.
+# If you're not using any external plugins, this is ignored.
+useWorldBorderPlugin: true
+useWorldGuardPlugin: true
 
 # The teleport delay is the amount of seconds it takes before teleporting. During that period the person should not move.
 teleportDelay: 3
