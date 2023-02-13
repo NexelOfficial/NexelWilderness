@@ -32,9 +32,9 @@ public class TeleportHandler implements Listener {
         this.randomBiome = randomBiome;
     }
 
-    public void startDelay(String displayName, Player currentPlayer, World world) {
+    public void startDelay(final String displayName, final Player currentPlayer, final World world) {
         teleportingPlayers.add(currentPlayer.getUniqueId());
-        String prefix = Messages.prefix;
+        final String prefix = Messages.prefix;
 
         countdownStarter = new BukkitRunnable() {
             @Override

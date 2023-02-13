@@ -35,6 +35,10 @@ public class RetriesCommand {
             message += "\n&eIncreasing this value beyond 20 when your world is not pre-loaded could cause serious lag spikes.";
         }
 
+        if (retries < 10) {
+            message += "\n&eDecreasing this value below 10 will grealy reduce the amount of times the biome will be found.";
+        }
+
         setRetries(retries);
         sender.sendMessage(main.coloredString(message));
         return true;

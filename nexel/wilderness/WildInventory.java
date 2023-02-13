@@ -98,7 +98,9 @@ public class WildInventory {
     public ItemStack newItem(ItemStack item, ArrayList<String> lore) {
         ItemMeta itemMeta = item.getItemMeta();
 
-        lore.replaceAll(textToTranslate -> main.coloredString(textToTranslate));
+        for (int i = 0; i < lore.size(); i++) {
+            lore.set(i, main.coloredString(lore.get(i)));
+        }
 
         itemMeta.setDisplayName(lore.get(0));
         lore.set(0, null);

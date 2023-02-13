@@ -40,7 +40,7 @@ public class InventoryHandler implements Listener {
         // Declare variables
         Inventory clickedInventory = event.getInventory();
 
-        if (clickedInventory != playerInventory.inventory) {
+        if (!clickedInventory.equals(playerInventory.inventory)) {
             return;
         }
 
@@ -119,7 +119,7 @@ public class InventoryHandler implements Listener {
     }
 
     private boolean isClickedItemValid(ItemStack clickedItem) {
-        if (clickedItem == null) {
+        if (clickedItem == null || !clickedItem.hasItemMeta()) {
 			return false;
 		}
 

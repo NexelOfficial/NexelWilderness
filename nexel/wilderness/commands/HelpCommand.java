@@ -3,8 +3,6 @@ package nexel.wilderness.commands;
 import nexel.wilderness.CommandHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +19,12 @@ public class HelpCommand {
             return false;
         }
 
-        List<String> commands = new ArrayList<>(List.of(
-                "&7/wild (Open the Wild menu)",
-                "&7/wild size <size> (Sets the size of the wild region.)",
-                "&7/wild biome add/remove <biome> <icon> (Add / remove a new biome to the biome picker.)",
-                "&7/wild blacklist (Add and show blacklisted blocks.)",
-                "&7/wild retries <retries> (Set the amount of biome finding attempts.)"
-        ));
+        List<String> commands = new ArrayList<String>();
+        commands.add("&7/wild (Open the Wild menu)");
+        commands.add("&7/wild size <size> (Sets the size of the wild region.)");
+        commands.add("&7/wild biome add/remove <biome> <icon> (Add / remove a new biome to the biome picker.)");
+        commands.add("&7/wild blacklist (Add and show blacklisted blocks.)");
+        commands.add("&7/wild retries <retries> (Set the amount of biome finding attempts.)");
 
         if (sender instanceof ConsoleCommandSender) {
             commands.remove(0);
