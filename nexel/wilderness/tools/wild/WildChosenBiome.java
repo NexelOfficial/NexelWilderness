@@ -40,8 +40,6 @@ public class WildChosenBiome {
             Location wildLocation = newWildLocation(currentWorld, size);
             Biome randomBiome = getBiomeFromLocation(wildLocation);
 
-            main.getServer().getConsoleSender().sendMessage(randomBiome.name() + ", " + biome.name());
-
             // If advancedBiomes is on, the biome must match the chosen biome exactly in name. (OCEAN is just OCEAN not DEEP_OCEAN)
             if (!advancedBiomes) {
 				if (!(randomBiome.name().contains(biome.name()))) {
