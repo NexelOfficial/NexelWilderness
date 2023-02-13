@@ -1,15 +1,12 @@
 package nexel.wilderness;
 
-
-
-
+import nexel.wilderness.commands.*;
 import nexel.wilderness.tools.*;
 import nexel.wilderness.tools.wild.WildChosenBiome;
 import nexel.wilderness.tools.wild.WildRandomBiome;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -17,178 +14,211 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import nexel.wilderness.commands.BiomeCommand;
-import nexel.wilderness.commands.BlacklistCommand;
-import nexel.wilderness.commands.HelpCommand;
-import nexel.wilderness.commands.SizeCommand;
-import nexel.wilderness.commands.WorldWildCommand;
-
-import java.util.Locale;
-
+import java.util.List;
 
 public class CommandHandler extends JavaPlugin {
+    private final CooldownHandler cooldown = new CooldownHandler(this);
+    private final SizeCommand sizeCommand = new SizeCommand(this);
+    private final RetriesCommand retriesCommand = new RetriesCommand(this);
+    private final BlacklistCommand blacklistCommand = new BlacklistCommand(this);
+    private final BiomeCommand biomeCommand = new BiomeCommand(this);
+    private final HelpCommand helpCommand = new HelpCommand(this);
+    private final WildChosenBiome chosenBiome = new WildChosenBiome(this, cooldown);
+    private final WildRandomBiome randomBiome = new WildRandomBiome(this, cooldown);
+    private final TeleportHandler teleport = new TeleportHandler(this, cooldown, chosenBiome, randomBiome);
+    private final InventoryHandler inventory = new InventoryHandler(this, cooldown, teleport);
+    private final WorldWildCommand worldWildCommand = new WorldWildCommand(this, cooldown, teleport);
 
-	public FileConfiguration config = null;
-	public InventoryClass inventoryClass = new InventoryClass(this);
-	public SizeCommand sizeCommand = new SizeCommand(this);
-	public BlacklistCommand blacklistCommand = new BlacklistCommand(this);
-	public BiomeCommand biomeCommand = new BiomeCommand(this);
-	public HelpCommand helpCommand = new HelpCommand(this);
-	public Cooldown cooldown = new Cooldown(this);
-	public WildRandomBiome wildRandomBiome = new WildRandomBiome(this);
-	public WildChosenBiome wildChosenBiome = new WildChosenBiome(this);
-	public DelayedTeleport delayedTeleport = new DelayedTeleport(this);
-	public InventoryHandler inventoryHandler = new InventoryHandler(this);
-	public WorldWildCommand worldWildCommand = new WorldWildCommand(this);
-	public Messages messages = new Messages(this);
+    @Override
+    public void onEnable() {
+        // Setup events
+        getServer().getPluginManager().registerEvents(inventory, this);
+        getServer().getPluginManager().registerEvents(teleport, this);
 
-	private TimeConverter timeConverter = new TimeConverter();
-	private CheckObject checkObject = new CheckObject();
+        // Check if the user is using a supported version
+        String version = Bukkit.getServer().getClass().getPackage().getName().replace('_', '.');
+        List<String> supportedVersions = getConfig().getStringList("supported-versions");
 
-	@Override
-    public void onEnable()
-	{
-		config = getConfig();
-		getServer().getPluginManager().registerEvents(inventoryHandler, this);
-		getServer().getPluginManager().registerEvents(delayedTeleport, this);
+        for (String supportedVersion : supportedVersions) {
+            if (version.contains(supportedVersion)) {
+                // Log the welcome messages
+                sendColoredMessage("&5Nexel&fWilderness &7> &fNexelWilderness has been enabled!");
+                sendColoredMessage("&5Nexel&fWilderness &7> &aCreated with &clove&a by Nexel");
 
-    	getServer().getConsoleSender().sendMessage(coloredString("&5Nexel&fWilderness &7> &fNexelWilderness has been enabled!"));
-    	getServer().getConsoleSender().sendMessage(coloredString("&5Nexel&fWilderness &7> &aCreated with &clove &aby Nexel"));
-    	saveDefaultConfig();
-    	cooldown.secondTimer();
-    	
-        new Metrics(this, 7969);
-        messages.init();
-	}
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String string, String[] args)
-	{
-		if (sender instanceof ConsoleCommandSender)
-		{
-			getServer().getConsoleSender().sendMessage(coloredString("&5Nexel&fWilderness &7> &cConsole commands are not supported yet. :("));
-			return false;
-		}
+                // Initialize other required things
+                saveDefaultConfig();
+                cooldown.startTimer();
+                Messages.init(this);
+                return;
+            }
+        }
 
-		if (command.getName().equalsIgnoreCase("wild")) {
+        // The version is not supported. Disable the plugin.
+        sendColoredMessage("&5Nexel&fWilderness &7> &cYou are using an unsupported version of Minecraft: '" + version + "'");
+        sendColoredMessage("&5Nexel&fWilderness &7> &cYou can add this version in the configuration file, but no support will be provided for it.");
+        getServer().getPluginManager().disablePlugin(this);
+    }
 
-			Player player = Bukkit.getPlayer(sender.getName());
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String string, String[] args) {
+        String commandName = command.getName();
 
-			// Check if a command has been given
-			if (args.length == 0)
-			{
-				if (config.isSet("blacklistedWorlds"))
-				{
-					String[] worlds = config.getString("blacklistedWorlds").trim().split(",");
-					for (String worldString : worlds)
-					{
-						World world = getServer().getWorld(worldString);
-						if (player.getWorld() == world)
-						{
-							player.sendMessage(coloredString(messages.prefix + messages.noWildAllowed));
-							return false;						
-						}
-					}
-				}
-				inventoryClass.mainWildMenu(player);
-				return true;
-			}
+        if (commandName.equalsIgnoreCase("wild")) {
+            if (sender instanceof ConsoleCommandSender) {
+                if (args.length == 0) {
+                    return helpCommand.helpCommand(sender, args);
+                } else if (args[0].equalsIgnoreCase("biome")) {
+                    return biomeCommand.biomeCommand(sender, args);
+                } else if (args[0].equalsIgnoreCase("size")) {
+                    return sizeCommand.sizeCommand(sender, args);
+                } else if (args[0].equalsIgnoreCase("retries")) {
+                    return retriesCommand.retriesCommand(sender, args);
+                } else if (args[0].equalsIgnoreCase("blacklist")) {
+                    return blacklistCommand.blacklistCommand(sender, args);
+                } else if (args[0].equalsIgnoreCase("help")) {
+                    return helpCommand.helpCommand(sender, args);
+                } else if (args[0].equalsIgnoreCase("reload")) {
+                    if (!(hasPermission(sender, "nexelwilderness.admin.reload"))) {
+                        return false;
+                    }
 
-			if (args[0].equalsIgnoreCase("biome"))
-				if (biomeCommand.biomeCommand(player, args))
-					return true;
-				
-			if (args[0].equalsIgnoreCase("size"))
-				if (sizeCommand.sizeCommand(player, args))
-					return true;
-			
-			if (args[0].equalsIgnoreCase("blacklist"))
-				if (blacklistCommand.blacklistCommand(player, args))
-					return true;
-			
-			if (args[0].equalsIgnoreCase("help"))
-				if (helpCommand.helpCommand(player, args))
-					return true;
-			
-			if (args[0].equalsIgnoreCase("world"))
-				if (worldWildCommand.worldWild(player, args))
-					return true;
-			
-			if (args[0].equalsIgnoreCase("reload"))
-			{
-				if (!(hasPermission(player, "nexelwilderness.admin.reload")))
-					return false;
+                    reloadConfig();
+                    sendColoredMessage(sender, Messages.prefix + Messages.succesfullReload);
+                    return true;
+                } else {
+                    // Check for player on first argument
+                    Player player = Bukkit.getPlayer(args[0]);
 
-				reloadConfig();
-				messages.init();
-				player.sendMessage(coloredString(messages.prefix + messages.succesfullReload));
-				return true;
-			}
-		}
-		else if (command.getName().equalsIgnoreCase("biometp"))
-		{
-			Player currentPlayer = Bukkit.getPlayer(sender.getName());
+                    if (player != null) {
+                        // Teleport player randomly
+                        randomBiome.normalWild(player, player.getWorld());
+                        sendColoredMessage(sender, Messages.prefix + Messages.succesfulTeleport.replace("%player%", player.getDisplayName()));
+                    } else {
+                        return helpCommand.helpCommand(sender, args);
+                    }
+                }
 
-			if (!(currentPlayer.hasPermission("nexelwilderness.biomewild") || currentPlayer.hasPermission("nexelwilderness.*")))
-	 		{
-	 			currentPlayer.sendMessage(coloredString(messages.prefix + messages.noPermissions));
-	 			return false;
-	 		}
+                return false;
+            }
 
-			int currentCooldown = cooldown.getPlayerCooldown(currentPlayer.getUniqueId());
+            Player player = Bukkit.getPlayer(sender.getName());
 
-	      	if (currentCooldown <= 0)
-	      	{
-			    currentPlayer.closeInventory(); 
-			    delayedTeleport.startDelay(args[0], currentPlayer, null);
-			    String delayTime = timeConverter.formatTime(config.getInt("teleportDelay"));
+            // Check if a player was found
+            if (player == null) {
+                return false;
+            }
 
-			    currentPlayer.sendMessage(coloredString(messages.prefix + messages.delayedTeleport
-						.replace("%time%", delayTime)));
-	     	}
-	      	else
-	      	{
-	     		currentPlayer.closeInventory();
-	     		String cooldownTime = timeConverter.formatTime(currentCooldown);
+            // Check if a command has been given
+            if (args.length == 0) {
+                // Check if player can use Wild in this world
+                if (getConfig().isSet("blacklistedWorlds")) {
+                    String[] worlds = getConfig().getString("blacklistedWorlds").trim().split(",");
+                    for (String worldString : worlds) {
+                        World world = getServer().getWorld(worldString);
+                        if (player.getWorld() == world) {
+                            sendColoredMessage(player, Messages.prefix + Messages.noWildAllowed);
+                            return false;
+                        }
+                    }
+                }
 
-	     		currentPlayer.sendMessage(coloredString(messages.prefix + messages.cooldownNotOver
-						.replace("%cooldown%", cooldownTime)));
-	    	}
-		}
-		return false;
-	}
-	
-	public boolean errorCatcher(int argsLength, int argsRequired, String usage, Player currentPlayer)
-	{
-		if (argsLength != argsRequired)
-		{
-			currentPlayer.sendMessage(coloredString(messages.prefix + messages.insufficientDetails.replace("%usage%", usage)));
-			return true;	
-		}
-		return false;
-	}
-	
-	public String capitalBiome(String biomeString)
-	{
-	    if(biomeString == null || biomeString.isEmpty())
-	        return biomeString;
+                // Open the wild menu
+                WildInventory playerInventory = inventory.getInventory(player);
+                playerInventory.openMainMenu();
+                return true;
+            } else if (args[0].equalsIgnoreCase("biome")) {
+                return biomeCommand.biomeCommand(sender, args);
+            } else if (args[0].equalsIgnoreCase("size")) {
+                return sizeCommand.sizeCommand(sender, args);
+            } else if (args[0].equalsIgnoreCase("retries")) {
+                return retriesCommand.retriesCommand(sender, args);
+            } else if (args[0].equalsIgnoreCase("blacklist")) {
+                return blacklistCommand.blacklistCommand(player, args);
+            } else if (args[0].equalsIgnoreCase("help")) {
+                return helpCommand.helpCommand(sender, args);
+            } else if (args[0].equalsIgnoreCase("world")) {
+                return worldWildCommand.worldWild(player, args);
+            } else if (args[0].equalsIgnoreCase("reload")) {
+                if (!(hasPermission(sender, "nexelwilderness.admin.reload"))) {
+                    return false;
+                }
 
-	    return biomeString.substring(0, 1).toUpperCase() + biomeString.substring(1).toLowerCase();
-	}
+                reloadConfig();
+                sendColoredMessage(sender, Messages.prefix + Messages.succesfullReload);
+                return true;
+            }
+        } else if (commandName.equalsIgnoreCase("biometp")) {
+            Player player = Bukkit.getPlayer(sender.getName());
 
-	public String coloredString(String textToTranslate)
-	{
-		return ChatColor.translateAlternateColorCodes('&', textToTranslate);
-	}
+            // Check if a player was found
+            if (player == null) {
+                return false;
+            }
 
-	public boolean hasPermission(Player permPlayer, String permission)
-	{
-		if (permPlayer.hasPermission(permission) || permPlayer.hasPermission("nexelwilderness.admin.*"))
-			return true;
-		else
-		{
-			permPlayer.sendMessage(coloredString(messages.prefix + messages.noPermissions));
-			return false;
-		}
-	}
+            // Check if the player has permissions
+            if (!(hasPermission(sender, "nexelwilderness.biomewild"))) {
+                sendColoredMessage(sender, Messages.prefix + Messages.noPermissions);
+                return false;
+            }
+
+            int currentCooldown = cooldown.getCooldown(player);
+
+            if (currentCooldown <= 0) {
+                player.closeInventory();
+                teleport.startDelay(args[0], player, null);
+                String delayTime = TimeConverter.formatTime(getConfig().getInt("teleportDelay"));
+
+                sendColoredMessage(sender, Messages.prefix + Messages.delayedTeleport
+                        .replace("%time%", delayTime));
+            } else {
+                player.closeInventory();
+                String cooldownTime = TimeConverter.formatTime(currentCooldown);
+
+                sendColoredMessage(sender, Messages.prefix + Messages.cooldownNotOver
+                        .replace("%cooldown%", cooldownTime));
+            }
+        }
+        return false;
+    }
+
+    public boolean errorCatcher(int argsLength, int argsRequired, String usage, CommandSender sender) {
+        if (argsLength != argsRequired) {
+            sendColoredMessage(sender, Messages.prefix + Messages.insufficientDetails.replace("%usage%", usage));
+            return true;
+        }
+
+        return false;
+    }
+
+    public String capitalBiome(String biomeString) {
+        if (biomeString == null || biomeString.isEmpty()) {
+            return biomeString;
+        }
+
+        return biomeString.substring(0, 1).toUpperCase() + biomeString.substring(1).toLowerCase();
+    }
+
+    public void sendColoredMessage(String text) {
+        sendColoredMessage(getServer().getConsoleSender(), text);
+    }
+
+    public void sendColoredMessage(CommandSender sender, String text) {
+        String coloredText = ChatColor.translateAlternateColorCodes('&', text);
+        sender.sendMessage(coloredText);
+    }
+
+    public boolean hasPermission(CommandSender sender, String permission) {
+        if (sender instanceof ConsoleCommandSender) {
+            return true;
+        }
+
+        Player permPlayer = (Player) sender;
+
+        if (permPlayer.hasPermission(permission) || permPlayer.hasPermission("nexelwilderness.admin.*")) {
+            return true;
+        } else {
+            sendColoredMessage(sender, Messages.prefix + Messages.noPermissions);
+            return false;
+        }
+    }
 }

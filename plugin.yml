@@ -1,12 +1,12 @@
 main: nexel.wilderness.CommandHandler
 name: NexelWilderness
-version: '0.10'
+version: '0.11'
 author: NathanDiepeveen
 description: An easy to use /wild plugin with Biome wilding.
-api-version: 1.16
+api-version: 1.13
 commands:
-   wild:
-      description: The base Wilderness command
+  wild:
+    description: The base Wilderness command
 permissions:
   nexelwilderness.admin.*:
     description: Gives access to all wild commands
@@ -17,6 +17,7 @@ permissions:
       nexelwilderness.admin.blacklist: true
       nexelwilderness.admin.size: true
       nexelwilderness.admin.bypasscooldown: true
+      nexelwilderness.admin.retries: true
   nexelwilderness.admin.biome:
     description: Allows you to add and remove biomes
     default: op
@@ -31,6 +32,9 @@ permissions:
     default: op
   nexelwilderness.admin.size:
     description: Allows you to set the size of the wild region
+    default: op
+  nexelwilderness.admin.retries:
+    description: Allows you to set amount of retries for finding a biome
     default: op
   nexelwilderness.admin.worldwild:
     description: Allows you to wild across worlds

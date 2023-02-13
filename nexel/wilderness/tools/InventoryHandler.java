@@ -1,135 +1,132 @@
 package nexel.wilderness.tools;
 
 import nexel.wilderness.CommandHandler;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Item;
+import nexel.wilderness.WildInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.UUID;
 
-public class InventoryHandler implements Listener{
+public class InventoryHandler implements Listener {
+    private final HashMap<UUID, WildInventory> inventories = new HashMap<>();
+    private final CommandHandler main;
+    private final CooldownHandler cooldown;
+    private final TeleportHandler teleport;
 
-	private CommandHandler main;
+	public WildInventory getInventory(Player player) {
+		UUID uuid = player.getUniqueId();
 
-	public InventoryHandler(CommandHandler main){
-	    this.main = main;
+        inventories.putIfAbsent(uuid, new WildInventory(main, player));
+		return inventories.get(uuid);
 	}
 
-	private TimeConverter timeConverter = new TimeConverter();
-	private CheckObject checkObject = new CheckObject();
+    public InventoryHandler(CommandHandler main, CooldownHandler cooldown, TeleportHandler teleport) {
+        this.main = main;
+        this.cooldown = cooldown;
+        this.teleport = teleport;
+    }
 
-	@EventHandler
-    public void onInventoryClick(InventoryClickEvent event)
-	{
-		// Declare variables
-		Inventory clickedInventory = event.getInventory();
-		Inventory menuInventory = main.inventoryClass.menuInventory;
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        // Get player's WildInventory
+        Player whoClicked = (Player) event.getWhoClicked();
+        WildInventory playerInventory = getInventory(whoClicked);
 
-		if (clickedInventory.getHolder() != checkObject.inventoryHasHolder(menuInventory))
-			return;
+        // Declare variables
+        Inventory clickedInventory = event.getInventory();
 
-		if (!event.getView().getTitle().equals(main.getConfig().getString("menuprefix")))
-			return;
+        if (!clickedInventory.equals(playerInventory.inventory)) {
+            return;
+        }
 
-		event.setCancelled(true);
+        // Prevent taking the item
+        event.setCancelled(true);
 
-		if (!isClickedItemValid(event.getCurrentItem()))
-			return;
-
-		// Declare more variables
-		Player currentPlayer = (Player) event.getWhoClicked();
-		String displayName = event.getCurrentItem().getItemMeta().getDisplayName();
-		String prefix = main.messages.prefix;
-
-		if (displayName.contains("Random biome"))
-		{
-			if (!(currentPlayer.hasPermission("nexelwilderness.wild") || currentPlayer.hasPermission("nexelwilderness.*")))
-			{
-				currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("noPermissions")));
-				return;
-			}
-
-			int currentCooldown = main.cooldown.getPlayerCooldown(currentPlayer.getUniqueId());
-
-			if (currentCooldown <= 0)
-			{
-				currentPlayer.closeInventory();
-				String delayTime = timeConverter.formatTime(main.getConfig().getInt("teleportDelay"));
-				currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("delayedTeleport").replace("%time%", delayTime)));
-				main.delayedTeleport.startDelay("randomBiome", currentPlayer, null);
-				return;
-			}
-			else
-			{
-				String cooldownTime = timeConverter.formatTime(currentCooldown);
-				currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("cooldownNotOver").replace("%cooldown%", cooldownTime)));
-				currentPlayer.closeInventory();
-				return;
-			}
-		}
-
-		if (displayName.contains("Close"))
-		{
-			currentPlayer.closeInventory();
+        if (!isClickedItemValid(event.getCurrentItem())) {
 			return;
 		}
 
-		if (displayName.contains("Pick a biome"))
-		{
-			main.inventoryClass.biomeChooser(currentPlayer);
-			return;
-		}
+        // Declare more variables
+        Player player = (Player) event.getWhoClicked();
+        String displayName = event.getCurrentItem().getItemMeta().getDisplayName();
+        String prefix = Messages.prefix;
 
-		if (displayName.contains("Back"))
-		{
-			main.inventoryClass.mainWildMenu(currentPlayer);
-			return;
-		}
+        if (displayName.contains("Random biome")) {
+            if (!(player.hasPermission("nexelwilderness.wild") || player.hasPermission("nexelwilderness.*"))) {
+                main.sendColoredMessage(player, prefix + main.getConfig().getString("noPermissions"));
+                return;
+            }
 
-		if (displayName.contains("Use /wild help for more options"))
-		{
-			currentPlayer.closeInventory();
-			currentPlayer.performCommand("wild help");
-			return;
- 		}
+            int currentCooldown = cooldown.getCooldown(player);
 
-		if (!(currentPlayer.hasPermission("nexelwilderness.biomewild") || currentPlayer.hasPermission("nexelwilderness.*")))
-		{
-			currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("noPermissions")));
-			return;
-		}
+            if (currentCooldown <= 0) {
+                player.closeInventory();
+                String delayTime = TimeConverter.formatTime(main.getConfig().getInt("teleportDelay"));
+                main.sendColoredMessage(player, prefix + Messages.delayedTeleport.replace("%time%", delayTime));
+                teleport.startDelay("randomBiome", player, null);
+                return;
+            } else {
+                String cooldownTime = TimeConverter.formatTime(currentCooldown);
+                main.sendColoredMessage(player, prefix + Messages.cooldownNotOver.replace("%cooldown%", cooldownTime));
+                player.closeInventory();
+                return;
+            }
+        }
 
-		int currentCooldown = main.cooldown.getPlayerCooldown(currentPlayer.getUniqueId());
+        if (displayName.contains("Close")) {
+            player.closeInventory();
+            return;
+        }
 
-		if (currentCooldown <= 0)
-		{
-			currentPlayer.closeInventory();
-			main.delayedTeleport.startDelay(displayName, currentPlayer, null);
-			String delayTime = timeConverter.formatTime(main.getConfig().getInt("teleportDelay"));
-			currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("delayedTeleport").replace("%time%", delayTime)));
-		}
-		else
-		{
-			currentPlayer.closeInventory();
-			String cooldownTime = timeConverter.formatTime(currentCooldown);
-			currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("cooldownNotOver").replace("%cooldown%", cooldownTime)));
-		}
-	}
+        if (displayName.contains("Pick a biome")) {
+            playerInventory.openBiomePicker();
+            return;
+        }
 
-	private boolean isClickedItemValid(ItemStack clickedItem)
-	{
-		if (clickedItem == null)
+        if (displayName.contains("Back")) {
+            playerInventory.openMainMenu();
+            return;
+        }
+
+        if (displayName.contains("Use /wild help for more options")) {
+            player.closeInventory();
+            player.performCommand("wild help");
+            return;
+        }
+
+        if (!(player.hasPermission("nexelwilderness.biomewild") || player.hasPermission("nexelwilderness.*"))) {
+            main.sendColoredMessage(player, prefix + main.getConfig().getString("noPermissions"));
+            return;
+        }
+
+        int currentCooldown = cooldown.getCooldown(player);
+
+        if (currentCooldown <= 0) {
+            player.closeInventory();
+            teleport.startDelay(displayName, player, null);
+            String delayTime = TimeConverter.formatTime(main.getConfig().getInt("teleportDelay"));
+            main.sendColoredMessage(player, prefix + Messages.delayedTeleport.replace("%time%", delayTime));
+        } else {
+            player.closeInventory();
+            String cooldownTime = TimeConverter.formatTime(currentCooldown);
+            main.sendColoredMessage(player, prefix + Messages.cooldownNotOver.replace("%cooldown%", cooldownTime));
+        }
+    }
+
+    private boolean isClickedItemValid(ItemStack clickedItem) {
+        if (clickedItem == null || !clickedItem.hasItemMeta()) {
 			return false;
+		}
 
-		if (!clickedItem.getItemMeta().hasDisplayName())
+        if (!clickedItem.getItemMeta().hasDisplayName()) {
 			return false;
+		}
 
-		return !clickedItem.getItemMeta().getDisplayName().isEmpty();
-	}
+        return !clickedItem.getItemMeta().getDisplayName().isEmpty();
+    }
 }

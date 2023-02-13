@@ -1,16 +1,3 @@
-# NexelWilderness
-# By: Nathan Diepeveen / Nexel
-# ----------------------------------
-
-
-
-# The prefix is visible in front of a command reply. To use a color, type & followed by the color number. 
-# For example: &a = Green.
-prefix: '&5&lNexel&f&lWilderness &7&l>'
-
-# The menuprefix is visible in menu's.
-menuprefix: 'NexelWilderness'
-
 # The size is the size of the wild region. Devide the size by 2 for the amount on the positive and negative side.
 # For example: 10000 is from 5000 to -5000.
 size: 10000
@@ -29,14 +16,15 @@ advancedBiomes: false
 # Enabled by default.
 biomePicker: true
 
-# The amount of retries is how much times the plugin will retry looking for the biome before giving up.
-# Higher numbers could result in higher TPS (More lag)
-# Lower numbers could result in not (or less often) finding the correct biome and thus giving an error.
-retries: 150
+# The amount of retries is how many times the plugin will retry looking for the biome before giving up.
+# Higher numbers could result in higher TPS (More lag).
+# Lower numbers could result in not (or less often) finding the correct biome.
+# In a preloaded world, this number can be set up to 150 without any noticable drops in TPS.
+# If your world is not preloaded, this number should be limited to around 20 to prevent noticable drops in TPS.
+retries: 75
 
 # The following list contains all Biomes. The names are modified and then visible in menu's. 
 # For example: 'DESERT_HILLS' becomes 'Desert hills'. Underscores become whitespaces and everything is lower-case except the first letter.
-
 # The Biomes are in the following order: <Biome>: <Icon>
 # <Icon> is the block visible in the main Wild menu. Use something that fits the biome.
 # Default Biomes:
@@ -44,34 +32,11 @@ retries: 150
 #  TAIGA: DIRT
 #  JUNGLE: MOSSY_COBBLESTONE
 #  PLAINS: GRASS
-Biomes:
+biomes:
   DESERT: SAND
   TAIGA: DIRT
   JUNGLE: MOSSY_COBBLESTONE
   PLAINS: GRASS
-
-# These messages are visible when for example commands are executed. 
-# The placeholders only work in the message they're used in. So %wildsize% is unusable in noSafeSpot.
-wildSizeSet: '&aSuccesfully set the wild limit to&l %wildsize%'
-noBlacklistedBlocks: '&7None. Use&l /wild blacklist add <block> &7to add one.'
-removeBlacklistedBlock: '&7Use&l /wild blacklist remove <block> &7to remove one.'
-blockDoesntExist: '&cThis block does not exist! Use: EMERALD_BLOCK, DIRT, etc.'
-biomeDoesntExist: '&cThis biome does not exist! Use: DESERT, DESERT_HILLS, etc.'
-succesfullBlacklist: '&aSuccesfully blacklisted&l %blacklistedblock%&a. Players can''t teleport on this block with /wild.'
-removedFromBlacklist: '&aSuccesfully removed&l %removedblock% &afrom blacklist. Players can now teleport on this block.'
-insufficientDetails: '&cYou provied insufficient details! Usage:&l %usage%'
-noPermissions: '&cYou don''t have permissions to use this command!'
-succesfullReload: '&aReloaded the plugin and it''s configuration!'
-noSafeSpot: '&cPlease try again. No safe spot found.'
-noBiomeSpot: '&cOh no.. We could not find a spot in this biome. Please try again later.'
-noWildAllowed: '&cYou cannot use /wild in this world!'
-biomeAdded: '&aSuccesfully added the &l%biome%&a biome with a &l%block%&a icon.'
-biomeRemoved: '&aSuccesfully removed the &l%biome%&a biome.'
-delayedTeleport: '&aTeleporting in %time%... Don''t move!'
-cooldownNotOver: '&cYou must wait %cooldown% before teleporting again!'
-interuptedTeleport: '&cYou moved! Teleportation cancelled.'
-teleporting: '&aTeleporting...'
-errorTeleporting: '&cThere was an error teleporting you!'
 
 # The blacklisted worlds are not allowed to be wilded in. 
 # That is usefull in for example the nether / end or lobby worlds etc.
@@ -90,31 +55,69 @@ mainIcons:
   biomePicker: GRASS
   backClose: ARROW
   helpCommand: BOOK
-  
-# The main text is the text that display in the main menu.
-# Change it to whatever you like! 
+
+# List of the officially supported versions. You could modify this list to add another version in.
+# No support for any versions other than the original will be provided.
+supported-versions: ["1.13", "1.14", "1.15", "1.16", "1.17", "1.18", "1.19"]
+
+# To make custom texts more beautiful, use colors.
+# To use a color, type & followed by the color number.
+# For example: &a = Green.
+
+# The prefix is visible in front of a command reply.
+prefix: '&5&lNexel&f&lWilderness &7&l>'
+
+# The title shown in the menu's
+menuprefix: 'NexelWilderness'
+
+# These messages are visible when commands are executed.
+# The placeholders only work in the message they're used in. So %wildsize% is unusable in noSafeSpot.
+wildSizeSet: '&aSuccesfully set the wild limit to &l%wildsize%'
+retriesSet: '&aSuccesfully set the retry amount to &l%retries%.'
+noBlacklistedBlocks: '&7None. Use &l/wild blacklist add <block>&7 to add one.'
+removeBlacklistedBlock: '&7Use &l/wild blacklist remove <block>&7 to remove one.'
+blockDoesntExist: '&cThis block does not exist! Use: EMERALD_BLOCK, DIRT, etc.'
+biomeDoesntExist: '&cThis biome does not exist! Use: DESERT, DESERT_HILLS, etc.'
+succesfullBlacklist: '&aSuccesfully blacklisted &l%blacklistedblock%&a. Players can''t teleport on this block with /wild.'
+removedFromBlacklist: '&aSuccesfully removed &l%removedblock%&a from blacklist. Players can now teleport on this block.'
+insufficientDetails: '&cYou provied insufficient details! Usage: &l%usage%'
+noPermissions: '&cYou don''t have permissions to use this command!'
+succesfullReload: '&aReloaded the plugin and it''s configuration!'
+noSafeSpot: '&cPlease try again. No safe spot found.'
+noBiomeSpot: '&cOh no.. We could not find a spot in this biome. Please try again later.'
+noWildAllowed: '&cYou cannot use /wild in this world!'
+biomeAdded: '&aSuccesfully added the &l%biome%&a biome with a &l%block%&a icon.'
+biomeRemoved: '&aSuccesfully removed the &l%biome%&a biome.'
+delayedTeleport: '&aTeleporting in %time%... Don''t move!'
+cooldownNotOver: '&cYou must wait %cooldown% before teleporting again!'
+interuptedTeleport: '&cYou moved! Teleportation cancelled.'
+teleporting: '&aTeleporting...'
+errorTeleporting: '&cThere was an error teleporting you!'
+succesfulTeleport: '&aSuccesfully teleported %player% to a random location.'
+
+# The text that will display in the main menu.
 # Usage:
-# Key:
-# - 'Title'
-# - 'Lore line 1'
-# - 'Lore line 2'
-# - 'etc.'
+#   Key:
+#     - 'Title'
+#     - 'Lore line 1'
+#     - 'Lore line 2'
+#     - 'etc.'
 mainText:
-  randomBiome: 
-  - '&6Random biome'
-  - '&7&oClick to teleport.'
-  biomePicker: 
-  - '&aPick a biome'
-  - '&7&oClick to open biome picker.'
-  backClose: 
-  - '&cClose'
-  - '&7&oClick to close.'
-  helpCommand: 
-  - '&fUse /wild help for more options' 
-  - '&7&oClick to close and run /wild help.'
+  randomBiome:
+    - '&6Random biome'
+    - '&7&oClick to teleport.'
+  biomePicker:
+    - '&aPick a biome'
+    - '&7&oClick to open biome picker.'
+  backClose:
+    - '&cClose'
+    - '&7&oClick to close.'
+  helpCommand:
+    - '&fUse /wild help for more options'
+    - '&7&oClick to close and run /wild help.'
   noBiomes:
-  - '&cNo biomes have been set.'
-  - '&7&oUse the diamond to wild to a random biome.'
+    - '&cNo biomes have been set.'
+    - '&7&oUse the diamond to wild to a random biome.'
   biome:
-  - '&a%biome%' 
-  - '&7&oClick to teleport.'
+    - '&a%biome%'
+    - '&7&oClick to teleport.'
