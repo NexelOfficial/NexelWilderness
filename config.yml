@@ -1,10 +1,4 @@
-# NexelWilderness
-# By: Nathan Diepeveen / Nexel
-# ----------------------------------
-
-
-
-# The prefix is visible in front of a command reply. To use a color, type & followed by the color number. 
+# The prefix is visible in front of a command reply. To use a color, type & followed by the color number.
 # For example: &a = Green.
 prefix: '&5&lNexel&f&lWilderness &7&l>'
 

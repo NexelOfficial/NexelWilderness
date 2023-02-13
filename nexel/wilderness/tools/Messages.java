@@ -2,52 +2,48 @@ package nexel.wilderness.tools;
 
 import nexel.wilderness.CommandHandler;
 
-public class Messages
-{
-    private CommandHandler main;
+public class Messages {
+    private static CommandHandler main;
 
-    public Messages(CommandHandler main) {
-        this.main = main;
-    }
-
-    public String insufficientDetails;
-    public String noWildAllowed;
-    public String noPermissions;
-    public String cooldownNotOver;
-    public String blockDoesntExist;
-    public String delayedTeleport;
-    public String prefix;
-    public String menuprefix;
-    public String succesfullReload;
-    public String noBiomeSpot;
-    public String noSafeSpot;
-    public String teleporting;
-    public String errorTeleporting;
+    public static String insufficientDetails;
+    public static String noWildAllowed;
+    public static String noPermissions;
+    public static String cooldownNotOver;
+    public static String blockDoesntExist;
+    public static String delayedTeleport;
+    public static String prefix;
+    public static String menuprefix;
+    public static String succesfullReload;
+    public static String noBiomeSpot;
+    public static String noSafeSpot;
+    public static String teleporting;
+    public static String errorTeleporting;
 
     // Biome Strings
-    public String biomeDoesntExist;
-    public String biomeRemoved;
-    public String biomeAdded;
+    public static String biomeDoesntExist;
+    public static String biomeRemoved;
+    public static String biomeAdded;
 
     // Blacklist Strings
-    public String noBlacklistedBlocks;
-    public String removeBlacklistedBlock;
-    public String succesfullBlacklist;
-    public String removedFromBlacklist;
+    public static String noBlacklistedBlocks;
+    public static String removeBlacklistedBlock;
+    public static String succesfullBlacklist;
+    public static String removedFromBlacklist;
 
     // Size String
-    public String wildSizeSet;
+    public static String wildSizeSet;
 
     // Bools
-    public boolean advancedBiomes;
-    public boolean biomePicker;
+    public static boolean advancedBiomes;
+    public static boolean biomePicker;
 
     // Ints
-    public int wildCooldown;
-    public int retries;
+    public static int wildCooldown;
+    public static int retries;
 
-    public void init()
-    {
+    public static void init(CommandHandler main) {
+        Messages.main = main;
+
         insufficientDetails = main.getConfig().getString("insufficientDetails");
         noWildAllowed = main.getConfig().getString("noWildAllowed");
         noPermissions = main.getConfig().getString("noPermissions");
