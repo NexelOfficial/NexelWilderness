@@ -23,10 +23,12 @@ advancedBiomes: false
 # Enabled by default.
 biomePicker: true
 
-# The amount of retries is how much times the plugin will retry looking for the biome before giving up.
-# Higher numbers could result in higher TPS (More lag)
-# Lower numbers could result in not (or less often) finding the correct biome and thus giving an error.
-retries: 150
+# The amount of retries is how many times the plugin will retry looking for the biome before giving up.
+# Higher numbers could result in higher TPS (More lag).
+# Lower numbers could result in not (or less often) finding the correct biome.
+# In a preloaded world, this number can be set up to 150 without any noticable drops in TPS.
+# If your world is not preloaded, this number should be limited to around 30 to prevent noticable drops in TPS.
+retries: 75
 
 # The following list contains all Biomes. The names are modified and then visible in menu's. 
 # For example: 'DESERT_HILLS' becomes 'Desert hills'. Underscores become whitespaces and everything is lower-case except the first letter.

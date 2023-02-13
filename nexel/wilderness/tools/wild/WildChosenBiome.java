@@ -40,14 +40,16 @@ public class WildChosenBiome {
             Location wildLocation = newWildLocation(currentWorld, size);
             Biome randomBiome = getBiomeFromLocation(wildLocation);
 
+            main.getServer().getConsoleSender().sendMessage(randomBiome.name() + ", " + biome.name());
+
             // If advancedBiomes is on, the biome must match the chosen biome exactly in name. (OCEAN is just OCEAN not DEEP_OCEAN)
             if (!advancedBiomes) {
-				if (!(randomBiome.toString().contains(biome.name()))) {
-					continue;
-				} else if (randomBiome != biome) {
+				if (!(randomBiome.name().contains(biome.name()))) {
 					continue;
 				}
-			}
+			} else if (randomBiome != biome) {
+                continue;
+            }
 
             // Check if there are blacklisted blocks, and if there are, retry.
             if (hasBlacklistedBlocks) {
