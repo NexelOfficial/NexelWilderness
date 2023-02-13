@@ -64,68 +64,31 @@ public class CommandHandler extends JavaPlugin {
         String commandName = command.getName();
 
         if (commandName.equalsIgnoreCase("wild")) {
-            if (sender instanceof ConsoleCommandSender) {
-                if (args.length == 0) {
-                    return helpCommand.helpCommand(sender, args);
-                } else if (args[0].equalsIgnoreCase("biome")) {
-                    return biomeCommand.biomeCommand(sender, args);
-                } else if (args[0].equalsIgnoreCase("size")) {
-                    return sizeCommand.sizeCommand(sender, args);
-                } else if (args[0].equalsIgnoreCase("retries")) {
-                    return retriesCommand.retriesCommand(sender, args);
-                } else if (args[0].equalsIgnoreCase("blacklist")) {
-                    return blacklistCommand.blacklistCommand(sender, args);
-                } else if (args[0].equalsIgnoreCase("help")) {
-                    return helpCommand.helpCommand(sender, args);
-                } else if (args[0].equalsIgnoreCase("reload")) {
-                    if (!(hasPermission(sender, "nexelwilderness.admin.reload"))) {
-                        return false;
-                    }
-
-                    reloadConfig();
-                    sendColoredMessage(sender, Messages.prefix + Messages.succesfullReload);
-                    return true;
-                } else {
-                    // Check for player on first argument
-                    Player player = Bukkit.getPlayer(args[0]);
-
-                    if (player != null) {
-                        // Teleport player randomly
-                        randomBiome.normalWild(player, player.getWorld());
-                        sendColoredMessage(sender, Messages.prefix + Messages.succesfulTeleport.replace("%player%", player.getDisplayName()));
-                    } else {
-                        return helpCommand.helpCommand(sender, args);
-                    }
-                }
-
-                return false;
-            }
-
-            Player player = Bukkit.getPlayer(sender.getName());
-
-            // Check if a player was found
-            if (player == null) {
-                return false;
-            }
-
             // Check if a command has been given
             if (args.length == 0) {
-                // Check if player can use Wild in this world
-                if (getConfig().isSet("blacklistedWorlds")) {
-                    String[] worlds = getConfig().getString("blacklistedWorlds").trim().split(",");
-                    for (String worldString : worlds) {
-                        World world = getServer().getWorld(worldString);
-                        if (player.getWorld() == world) {
-                            sendColoredMessage(player, Messages.prefix + Messages.noWildAllowed);
-                            return false;
+                // Show help screen for console, open the wild menu for player
+                if (sender instanceof ConsoleCommandSender) {
+                    return helpCommand.helpCommand(sender, args);
+                } else if (sender instanceof Player) {
+                    Player player = Bukkit.getPlayer(sender.getName());
+
+                    // Check if player can use Wild in this world
+                    if (getConfig().isSet("blacklistedWorlds")) {
+                        String[] worlds = getConfig().getString("blacklistedWorlds").trim().split(",");
+                        for (String worldString : worlds) {
+                            World world = getServer().getWorld(worldString);
+                            if (player.getWorld() == world) {
+                                sendColoredMessage(player, Messages.prefix + Messages.noWildAllowed);
+                                return false;
+                            }
                         }
                     }
-                }
 
-                // Open the wild menu
-                WildInventory playerInventory = inventory.getInventory(player);
-                playerInventory.openMainMenu();
-                return true;
+                    // Open the wild menu
+                    WildInventory playerInventory = inventory.getInventory(player);
+                    playerInventory.openMainMenu();
+                    return true;
+                }
             } else if (args[0].equalsIgnoreCase("biome")) {
                 return biomeCommand.biomeCommand(sender, args);
             } else if (args[0].equalsIgnoreCase("size")) {
@@ -133,11 +96,9 @@ public class CommandHandler extends JavaPlugin {
             } else if (args[0].equalsIgnoreCase("retries")) {
                 return retriesCommand.retriesCommand(sender, args);
             } else if (args[0].equalsIgnoreCase("blacklist")) {
-                return blacklistCommand.blacklistCommand(player, args);
+                return blacklistCommand.blacklistCommand(sender, args);
             } else if (args[0].equalsIgnoreCase("help")) {
                 return helpCommand.helpCommand(sender, args);
-            } else if (args[0].equalsIgnoreCase("world")) {
-                return worldWildCommand.worldWild(player, args);
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (!(hasPermission(sender, "nexelwilderness.admin.reload"))) {
                     return false;
@@ -146,8 +107,22 @@ public class CommandHandler extends JavaPlugin {
                 reloadConfig();
                 sendColoredMessage(sender, Messages.prefix + Messages.succesfullReload);
                 return true;
+            } else if (sender instanceof Player && args[0].equalsIgnoreCase("world")) {
+                Player player = Bukkit.getPlayer(sender.getName());
+                return worldWildCommand.worldWild(player, args);
+            } else if (sender instanceof ConsoleCommandSender) {
+                // Check for player on first argument
+                Player player = Bukkit.getPlayer(args[0]);
+
+                if (player != null) {
+                    // Teleport player randomly
+                    randomBiome.normalWild(player, player.getWorld());
+                    sendColoredMessage(sender, Messages.prefix + Messages.succesfulTeleport.replace("%player%", player.getDisplayName()));
+                } else {
+                    return helpCommand.helpCommand(sender, args);
+                }
             }
-        } else if (commandName.equalsIgnoreCase("biometp")) {
+        } else if (commandName.equalsIgnoreCase("biometp") && sender instanceof Player) {
             Player player = Bukkit.getPlayer(sender.getName());
 
             // Check if a player was found
@@ -168,14 +143,12 @@ public class CommandHandler extends JavaPlugin {
                 teleport.startDelay(args[0], player, null);
                 String delayTime = TimeConverter.formatTime(getConfig().getInt("teleportDelay"));
 
-                sendColoredMessage(sender, Messages.prefix + Messages.delayedTeleport
-                        .replace("%time%", delayTime));
+                sendColoredMessage(sender, Messages.prefix + Messages.delayedTeleport.replace("%time%", delayTime));
             } else {
                 player.closeInventory();
                 String cooldownTime = TimeConverter.formatTime(currentCooldown);
 
-                sendColoredMessage(sender, Messages.prefix + Messages.cooldownNotOver
-                        .replace("%cooldown%", cooldownTime));
+                sendColoredMessage(sender, Messages.prefix + Messages.cooldownNotOver.replace("%cooldown%", cooldownTime));
             }
         }
         return false;
