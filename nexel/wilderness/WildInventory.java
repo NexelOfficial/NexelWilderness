@@ -99,9 +99,7 @@ public class WildInventory {
 	public ItemStack newItem(ItemStack item, ArrayList<String> lore) {
 		ItemMeta itemMeta = item.getItemMeta();
 
-		for (int i = 0; i < lore.size(); i++) {
-			lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i)));
-		}
+		lore.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
 
 		itemMeta.setDisplayName(lore.get(0));
 		lore.set(0, null);

@@ -3,10 +3,10 @@
 # Size is ignored when using the WorldBorder plugin.
 size: 10000
 
-# Make use of border plugins.
-# If you're not using any external plugins, this is ignored.
-useWorldBorderPlugin: true
-useWorldGuardPlugin: true
+# Make use of border plugins. If you're not using any, this is ignored.
+# Add your border plugins in the brackets. They are prioritized left to right.
+# Supported plugins: WorldBorder
+borderPlugin: ['WorldBorder']
 
 # The teleport delay is the amount of seconds it takes before teleporting. During that period the person should not move.
 teleportDelay: 3
@@ -22,12 +22,13 @@ advancedBiomes: false
 # Enabled by default.
 biomePicker: true
 
-# The amount of retries is how many times the plugin will retry looking for the biome before giving up.
+# The amount of retries is how many times the plugin will retry looking for a location before giving up.
 # Higher numbers could result in higher TPS (More lag).
 # Lower numbers could result in not (or less often) finding the correct biome.
-# In a preloaded world, this number can be set up to 150 without any noticable drops in TPS.
-# If your world is not preloaded, this number should be limited to around 20 to prevent noticable drops in TPS.
-retries: 50
+# Most common biomes can be found within 75 searches, but if you're using advanced biomes, this number should probably be set higher.
+# Blacklist retries should not be put higher than 10 unless very common blocks like grass are blacklisted.
+biomeRetries: 75
+blacklistRetries: 5
 
 # The following list contains all Biomes. The names are modified and then visible in menu's. 
 # For example: 'DESERT_HILLS' becomes 'Desert hills'. Underscores become whitespaces and everything is lower-case except the first letter.

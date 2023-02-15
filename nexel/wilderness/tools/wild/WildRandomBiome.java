@@ -26,7 +26,7 @@ public class WildRandomBiome {
     public void normalWild(Player player, World currentWorld) {
         // Declare variables
         int size = main.getConfig().getInt("size");
-        int retries = Messages.retries;
+        int blacklistRetries = Messages.blacklistRetries;
         int wildCooldown = Messages.wildCooldown;
 
         if (currentWorld == null) {
@@ -36,7 +36,7 @@ public class WildRandomBiome {
         boolean hasBlacklistedBlocks = main.getConfig().isSet("blacklistedBlocks");
 
         loop:
-        for (int i = 0; i < retries; i++) {
+        for (int i = 0; i < blacklistRetries; i++) {
             // Create new wild location
             Location wildLocation = newWildLocation(currentWorld, size);
 

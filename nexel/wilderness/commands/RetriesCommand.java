@@ -28,15 +28,18 @@ public class RetriesCommand {
             return false;
         }
 
+        boolean advancedBiomes = Messages.advancedBiomes;
         int retries = Integer.parseInt(args[1]);
         String message = Messages.prefix + Messages.retriesSet.replace("%retries%", args[1]);
 
-        if (retries > 20) {
-            message += "\n&eIncreasing this value beyond 20 when your world is not pre-loaded could cause serious lag spikes.";
+        if (!advancedBiomes && retries > 100) {
+            message += "\n&eWhen not using advanced biomes, setting this value above 100 is unnecessary most of the times and could cause lag spikes.";
+        } else if (advancedBiomes && retries > 250){
+            message += "\n&eWhen using advanced biomes, setting this value above 250 is unnecessary most of the times and could cause lag spikes.";
         }
 
-        if (retries < 10) {
-            message += "\n&eDecreasing this value below 10 will grealy reduce the amount of times the biome will be found.";
+        if (retries < 30) {
+            message += "\n&eDecreasing this value below 30 will grealy reduce the amount of times the biome will be found.";
         }
 
         setRetries(retries);

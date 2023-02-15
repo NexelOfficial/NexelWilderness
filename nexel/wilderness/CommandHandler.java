@@ -10,13 +10,13 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
 public class CommandHandler extends JavaPlugin {
+    private final UpdateChecker updateChecker = new UpdateChecker(this);
     private final CooldownHandler cooldown = new CooldownHandler(this);
     private final SizeCommand sizeCommand = new SizeCommand(this);
     private final RetriesCommand retriesCommand = new RetriesCommand(this);
@@ -34,6 +34,7 @@ public class CommandHandler extends JavaPlugin {
     @Override
     public void onEnable() {
         // Setup events
+        getServer().getPluginManager().registerEvents(updateChecker, this);
         getServer().getPluginManager().registerEvents(inventory, this);
         getServer().getPluginManager().registerEvents(teleport, this);
 

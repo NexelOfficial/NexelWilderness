@@ -26,38 +26,26 @@ public class WildChosenBiome {
     }
 
     public void biomeWild(Biome biome, Player player, World currentWorld) {
-        // Declare variables
+        boolean hasBlacklistedBlocks = main.getConfig().isSet("blacklistedBlocks");
         int size = main.getConfig().getInt("size");
-        int retries = Messages.retries;
+        int biomeRetries = Messages.biomeRetries;
+        int blacklistRetries = Messages.blacklistRetries;
         int wildCooldown = Messages.wildCooldown;
 
         if (currentWorld == null) {
-			currentWorld = player.getWorld();
-		}
+            currentWorld = player.getWorld();
+        }
 
-        boolean advancedBiomes = Messages.advancedBiomes;
-        boolean hasBlacklistedBlocks = main.getConfig().isSet("blacklistedBlocks");
-
-        loop:
-        for (int i = 0; i < retries; i++) {
+        blacklistLoop:
+        for (int i = 0; i < blacklistRetries; i++) {
             // Create a new wild location and biome
-            Location wildLocation = newWildLocation(currentWorld, size);
-            Biome randomBiome = getBiomeFromLocation(wildLocation);
-
-            // If advancedBiomes is on, the biome must match the chosen biome exactly in name. (OCEAN is just OCEAN not DEEP_OCEAN)
-            if (!advancedBiomes) {
-				if (!(randomBiome.name().contains(biome.name()))) {
-					continue;
-				}
-			} else if (randomBiome != biome) {
-                continue;
-            }
+            Location wildLocation = newWildLocation(currentWorld, size, biome, biomeRetries);
 
             // Check if there are blacklisted blocks, and if there are, retry.
             if (hasBlacklistedBlocks) {
 				for (String blacklistedBlock : main.getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false)) {
 					if (wildLocation.getBlock().getType() == Material.valueOf(blacklistedBlock)) {
-						continue loop;
+						continue blacklistLoop;
 					}
 				}
 			}
@@ -78,27 +66,41 @@ public class WildChosenBiome {
         player.closeInventory();
     }
 
-    private Location newWildLocation(World world, int size) {
+    private Location newWildLocation(World world, int size, Biome biomeToFind, int retries) {
+        boolean advancedBiomes = Messages.advancedBiomes;
         int wildX = (rand.nextInt(size + 1) - size / 2);
         int wildZ = (rand.nextInt(size + 1) - size / 2);
 
-        // Check for WorldBorder and update wildX and wildZ
-        if (main.worldBorderFound) {
-            BorderData border = Config.Border(world.getName());
+        for (int i = 0; i < retries; i++) {
+            // Check for WorldBorder and update wildX and wildZ
+            if (main.worldBorderFound) {
+                BorderData border = Config.Border(world.getName());
 
-            if (border != null)
-            {
-                Location wildLocation;
+                if (border != null) {
+                    Location wildLocation;
 
-                do {
-                    // Get random position in WorldBorder
-                    int sizeX = border.getRadiusX();
-                    int sizeZ = border.getRadiusZ();
+                    do {
+                        // Get random position in WorldBorder
+                        int sizeX = border.getRadiusX();
+                        int sizeZ = border.getRadiusZ();
 
-                    wildX = (rand.nextInt(sizeX * 2) - sizeX) + (int) border.getX();
-                    wildZ = (rand.nextInt(sizeZ * 2) - sizeZ) + (int) border.getZ();
-                    wildLocation = new Location(world, wildX, 64, wildZ);
-                } while (!border.insideBorder(wildLocation));
+                        wildX = (rand.nextInt(sizeX * 2) - sizeX) + (int) border.getX();
+                        wildZ = (rand.nextInt(sizeZ * 2) - sizeZ) + (int) border.getZ();
+
+                        wildLocation = new Location(world, wildX, 64, wildZ);
+                    } while (!border.insideBorder(wildLocation));
+                }
+            }
+
+            // If advancedBiomes is on, the biome must match the chosen biome exactly in name. (OCEAN is just OCEAN not DEEP_OCEAN)
+            Biome randomBiome = getBiomeFromLocation(new Location(world, wildX, 64, wildZ));
+
+            if (!advancedBiomes) {
+                if (randomBiome.name().contains(biomeToFind.name())) {
+                    break;
+                }
+            } else if (randomBiome.name().equals(biomeToFind.name())) {
+                break;
             }
         }
 
