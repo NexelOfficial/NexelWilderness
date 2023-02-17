@@ -7,7 +7,6 @@ public class TimeConverter {
 		int finalhours = seconds / 3600;
 		int finalminutes = (seconds - (finalhours * 3600)) / 60;
 		int finalseconds = seconds - (finalminutes * 60) - (finalhours * 3600);
-
 		if (finalhours != 0) {
 			time += finalhours + " hours, ";
 		}
