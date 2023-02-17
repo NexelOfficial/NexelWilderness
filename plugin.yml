@@ -1,12 +1,13 @@
 main: nexel.wilderness.CommandHandler
 name: NexelWilderness
-version: '0.11'
+version: '0.12'
 author: NathanDiepeveen
 description: An easy to use /wild plugin with Biome wilding.
 api-version: 1.13
+softdepend: [WorldBorder]
 commands:
-   wild:
-      description: The base Wilderness command
+  wild:
+    description: The base Wilderness command
 permissions:
   nexelwilderness.admin.*:
     description: Gives access to all wild commands

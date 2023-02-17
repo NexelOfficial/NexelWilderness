@@ -32,8 +32,8 @@ public class SizeCommand {
         int size = Integer.parseInt(args[1]);
 
         setSize(size);
-        sender.sendMessage(main.coloredString(Messages.prefix + Messages.wildSizeSet
-                .replace("%wildsize%", size / 2 + ", -" + size / 2)));
+        main.sendColoredMessage(sender, Messages.prefix + Messages.wildSizeSet
+                .replace("%wildsize%", size / 2 + ", -" + size / 2));
         return true;
     }
 

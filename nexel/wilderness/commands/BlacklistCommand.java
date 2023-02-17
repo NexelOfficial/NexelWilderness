@@ -24,15 +24,15 @@ public class BlacklistCommand {
 
         // List all blacklisted blocks
         if (args.length == 1) {
-            sender.sendMessage(main.coloredString(prefix + "Blacklisted blocks:"));
+            main.sendColoredMessage(sender, prefix + "Blacklisted blocks:");
 
             if (!(main.getConfig().isSet("blacklistedBlocks"))) {
-                sender.sendMessage(main.coloredString("&7" + Messages.noBlacklistedBlocks));
+                main.sendColoredMessage(sender, "&7" + Messages.noBlacklistedBlocks);
                 return true;
             }
 
             if (main.getConfig().getConfigurationSection("blacklistedBlocks").getKeys(false).size() == 0) {
-                sender.sendMessage(main.coloredString("&7" + Messages.noBlacklistedBlocks));
+                main.sendColoredMessage(sender, "&7" + Messages.noBlacklistedBlocks);
                 return true;
             }
 
@@ -40,7 +40,7 @@ public class BlacklistCommand {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7" + block));
 			}
 
-            sender.sendMessage(main.coloredString("&7" + Messages.removeBlacklistedBlock));
+            main.sendColoredMessage(sender, "&7" + Messages.removeBlacklistedBlock);
             return true;
         }
 
@@ -57,18 +57,18 @@ public class BlacklistCommand {
         if (shouldAdd) {
 			// Add a new blacklist block
             if (!CheckTools.materialExists(material)) {
-                sender.sendMessage(main.coloredString(prefix + Messages.blockDoesntExist));
+                main.sendColoredMessage(sender, prefix + Messages.blockDoesntExist);
                 return false;
             }
 
             addBlacklist(material);
-            sender.sendMessage(main.coloredString(prefix + Messages.succesfullBlacklist
-                    .replace("%blacklistedblock%", material)));
+            main.sendColoredMessage(sender, prefix + Messages.succesfullBlacklist
+                    .replace("%blacklistedblock%", material));
             return true;
         } else if (shouldRemove) {
 			// Remove a blacklist block
             if (!CheckTools.materialExists(material)) {
-                sender.sendMessage(main.coloredString(prefix + Messages.blockDoesntExist));
+                main.sendColoredMessage(sender, prefix + Messages.blockDoesntExist);
                 return false;
             }
 
@@ -77,8 +77,8 @@ public class BlacklistCommand {
                     .replace("%removedblock%", material)));
             return true;
         } else {
-            sender.sendMessage(main.coloredString(prefix + Messages.insufficientDetails
-                    .replace("%usage%", "/wild blacklist add/remove <block>")));
+            main.sendColoredMessage(sender, prefix + Messages.insufficientDetails
+                    .replace("%usage%", "/wild blacklist add/remove <block>"));
             return true;
         }
     }

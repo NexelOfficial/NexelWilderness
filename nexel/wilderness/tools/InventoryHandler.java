@@ -40,7 +40,7 @@ public class InventoryHandler implements Listener {
         // Declare variables
         Inventory clickedInventory = event.getInventory();
 
-        if (clickedInventory != playerInventory.inventory) {
+        if (!clickedInventory.equals(playerInventory.inventory)) {
             return;
         }
 
@@ -52,34 +52,34 @@ public class InventoryHandler implements Listener {
 		}
 
         // Declare more variables
-        Player currentPlayer = (Player) event.getWhoClicked();
+        Player player = (Player) event.getWhoClicked();
         String displayName = event.getCurrentItem().getItemMeta().getDisplayName();
         String prefix = Messages.prefix;
 
         if (displayName.contains("Random biome")) {
-            if (!(currentPlayer.hasPermission("nexelwilderness.wild") || currentPlayer.hasPermission("nexelwilderness.*"))) {
-                currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("noPermissions")));
+            if (!(player.hasPermission("nexelwilderness.wild") || player.hasPermission("nexelwilderness.*"))) {
+                main.sendColoredMessage(player, prefix + main.getConfig().getString("noPermissions"));
                 return;
             }
 
-            int currentCooldown = cooldown.getCooldown(currentPlayer);
+            int currentCooldown = cooldown.getCooldown(player);
 
             if (currentCooldown <= 0) {
-                currentPlayer.closeInventory();
+                player.closeInventory();
                 String delayTime = TimeConverter.formatTime(main.getConfig().getInt("teleportDelay"));
-                currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("delayedTeleport").replace("%time%", delayTime)));
-                teleport.startDelay("randomBiome", currentPlayer, null);
+                main.sendColoredMessage(player, prefix + Messages.delayedTeleport.replace("%time%", delayTime));
+                teleport.startDelay("randomBiome", player, null);
                 return;
             } else {
                 String cooldownTime = TimeConverter.formatTime(currentCooldown);
-                currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("cooldownNotOver").replace("%cooldown%", cooldownTime)));
-                currentPlayer.closeInventory();
+                main.sendColoredMessage(player, prefix + Messages.cooldownNotOver.replace("%cooldown%", cooldownTime));
+                player.closeInventory();
                 return;
             }
         }
 
         if (displayName.contains("Close")) {
-            currentPlayer.closeInventory();
+            player.closeInventory();
             return;
         }
 
@@ -94,32 +94,32 @@ public class InventoryHandler implements Listener {
         }
 
         if (displayName.contains("Use /wild help for more options")) {
-            currentPlayer.closeInventory();
-            currentPlayer.performCommand("wild help");
+            player.closeInventory();
+            player.performCommand("wild help");
             return;
         }
 
-        if (!(currentPlayer.hasPermission("nexelwilderness.biomewild") || currentPlayer.hasPermission("nexelwilderness.*"))) {
-            currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("noPermissions")));
+        if (!(player.hasPermission("nexelwilderness.biomewild") || player.hasPermission("nexelwilderness.*"))) {
+            main.sendColoredMessage(player, prefix + main.getConfig().getString("noPermissions"));
             return;
         }
 
-        int currentCooldown = cooldown.getCooldown(currentPlayer);
+        int currentCooldown = cooldown.getCooldown(player);
 
         if (currentCooldown <= 0) {
-            currentPlayer.closeInventory();
-            teleport.startDelay(displayName, currentPlayer, null);
+            player.closeInventory();
+            teleport.startDelay(displayName, player, null);
             String delayTime = TimeConverter.formatTime(main.getConfig().getInt("teleportDelay"));
-            currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("delayedTeleport").replace("%time%", delayTime)));
+            main.sendColoredMessage(player, prefix + Messages.delayedTeleport.replace("%time%", delayTime));
         } else {
-            currentPlayer.closeInventory();
+            player.closeInventory();
             String cooldownTime = TimeConverter.formatTime(currentCooldown);
-            currentPlayer.sendMessage(main.coloredString(prefix + main.getConfig().getString("cooldownNotOver").replace("%cooldown%", cooldownTime)));
+            main.sendColoredMessage(player, prefix + Messages.cooldownNotOver.replace("%cooldown%", cooldownTime));
         }
     }
 
     private boolean isClickedItemValid(ItemStack clickedItem) {
-        if (clickedItem == null) {
+        if (clickedItem == null || !clickedItem.hasItemMeta()) {
 			return false;
 		}
 

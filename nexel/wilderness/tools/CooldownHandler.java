@@ -33,27 +33,27 @@ public class CooldownHandler {
         cooldowns.put(uuid, cooldown);
     }
 
-	public CooldownHandler(CommandHandler main) {
-		this.main = main;
-	}
+    public CooldownHandler(CommandHandler main) {
+        this.main = main;
+    }
 
-    public void secondTimer() {
+    public void startTimer() {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Player currentPlayer : Bukkit.getOnlinePlayers()) {
-                    if (currentPlayer.hasPermission("nexelwilderness.admin.bypasscooldown")) {
-						setCooldown(currentPlayer, 0);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.hasPermission("nexelwilderness.admin.bypasscooldown")) {
+                        setCooldown(player, 0);
                         continue;
-					}
+                    }
 
-                    int currentCooldown = getCooldown(currentPlayer);
+                    int currentCooldown = getCooldown(player);
 
                     if (currentCooldown == 0) {
                         continue;
                     }
 
-                    setCooldown(currentPlayer, currentCooldown - 1);
+                    setCooldown(player, currentCooldown - 1);
                 }
             }
         }.runTaskTimer(main, 0L, 20L);

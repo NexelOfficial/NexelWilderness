@@ -38,7 +38,7 @@ public class Messages {
 
     // Ints
     public static int wildCooldown;
-    public static int retries;
+    public static int biomeRetries, blacklistRetries;
 
     public static void init(CommandHandler main) {
         insufficientDetails = main.getConfig().getString("insufficientDetails");
@@ -72,6 +72,7 @@ public class Messages {
         biomePicker = main.getConfig().getBoolean("biomePicker");
 
         wildCooldown = main.getConfig().getInt("wildCooldown");
-        retries = main.getConfig().getInt("retries");
+        biomeRetries = main.getConfig().getInt("biomeRetries");
+        blacklistRetries = main.getConfig().getInt("blacklistRetries");
     }
 }

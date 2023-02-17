@@ -17,14 +17,14 @@ public class WorldWildCommand {
         this.teleport = teleport;
 	}
 
-    public boolean worldWild(Player currentPlayer, String[] args) {
+    public boolean worldWild(Player player, String[] args) {
         // Permissions check
-        if (!main.hasPermission(currentPlayer, "nexelwilderness.admin.worldwild")) {
+        if (!main.hasPermission(player, "nexelwilderness.admin.worldwild")) {
 			return false;
 		}
 
         // Catch command error
-        if (main.errorCatcher(args.length, 2, "/wild world <world>", currentPlayer)) {
+        if (main.errorCatcher(args.length, 2, "/wild world <world>", player)) {
 			return false;
 		}
 
@@ -39,18 +39,18 @@ public class WorldWildCommand {
         World world = Bukkit.getWorld(args[1]);
 
         // Check if player is on cooldown
-        int currentCooldown = cooldown.getCooldown(currentPlayer);
+        int currentCooldown = cooldown.getCooldown(player);
 
         if (currentCooldown <= 0) {
-            currentPlayer.closeInventory();
+            player.closeInventory();
             String delayTime = TimeConverter.formatTime(main.getConfig().getInt("teleportDelay"));
-            currentPlayer.sendMessage(main.coloredString(prefix + Messages.delayedTeleport.replace("%time%", delayTime)));
-            teleport.startDelay("randomBiome", currentPlayer, world);
+            main.sendColoredMessage(player, prefix + Messages.delayedTeleport.replace("%time%", delayTime));
+            teleport.startDelay("randomBiome", player, world);
             return true;
         } else {
             String cooldownTime = TimeConverter.formatTime(currentCooldown);
-            currentPlayer.sendMessage(main.coloredString(prefix + Messages.cooldownNotOver.replace("%cooldown%", cooldownTime)));
-            currentPlayer.closeInventory();
+            main.sendColoredMessage(player, prefix + Messages.cooldownNotOver.replace("%cooldown%", cooldownTime));
+            player.closeInventory();
             return true;
         }
     }

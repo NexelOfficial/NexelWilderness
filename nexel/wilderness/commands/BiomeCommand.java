@@ -34,13 +34,13 @@ public class BiomeCommand {
 
         // Check if material exists
         if (!CheckTools.materialExists(material)) {
-            sender.sendMessage(main.coloredString(prefix + Messages.blockDoesntExist));
+            main.sendColoredMessage(sender, prefix + Messages.blockDoesntExist);
             return false;
         }
 
         // Checking the biome
         if (CheckTools.biomeExists(biome) == null) {
-            sender.sendMessage(main.coloredString(prefix + Messages.biomeDoesntExist));
+            main.sendColoredMessage(sender, prefix + Messages.biomeDoesntExist);
             return false;
         }
 
@@ -48,31 +48,31 @@ public class BiomeCommand {
         if (removeBiome) {
 			// Remove command
             removeBiome(biome);
-            sender.sendMessage(main.coloredString(prefix + Messages.biomeRemoved
-                    .replace("%biome%", biome)));
+            main.sendColoredMessage(sender, prefix + Messages.biomeRemoved
+                    .replace("%biome%", biome));
             return true;
         } else if (addBiome) {
 			// Add command
             addBiome(biome, material);
-            sender.sendMessage(main.coloredString(prefix + Messages.biomeAdded
+            main.sendColoredMessage(sender, prefix + Messages.biomeAdded
                     .replace("%biome%", biome)
-                    .replace("%block%", material)));
+                    .replace("%block%", material));
             return true;
         } else {
 			// Wrong usage
-            sender.sendMessage(main.coloredString(prefix + Messages.insufficientDetails
-                    .replace("%usage%", "/wild biome add/remove <biome> <icon>")));
+            main.sendColoredMessage(sender, prefix + Messages.insufficientDetails
+                    .replace("%usage%", "/wild biome add/remove <biome> <icon>"));
             return true;
         }
     }
 
     private void removeBiome(String biome) {
-        main.getConfig().set("Biomes." + biome, null);
+        main.getConfig().set("biomes." + biome, null);
         main.saveConfig();
     }
 
     private void addBiome(String biome, String material) {
-        main.getConfig().set("Biomes." + biome, material);
+        main.getConfig().set("biomes." + biome, material);
         main.saveConfig();
     }
 }
